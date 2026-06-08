@@ -793,6 +793,8 @@
 // CONFIG & SUPABASE INIT
 // ============================================================
 let supabase = null;
+const SUPABASE_URL = 'https://iyhwbzsrrgijfjjbqkyq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5aHdienNycmdpamZqamJxa3lxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc1MzQsImV4cCI6MjA5NjQ0MzUzNH0.A7WoNT4ZWhJn1e3kHrRiQHUUoKfto4q4EkJgq34Hlqw';
 
 const MUSCLES = [
   { name: 'أرجل', icon: '🦵', color: '#ff6b35' },
@@ -1533,13 +1535,9 @@ function showToast(msg, type = 'success') {
 // STARTUP
 // ============================================================
 window.addEventListener('DOMContentLoaded', () => {
-  const url = localStorage.getItem('sb_url');
-  const key = localStorage.getItem('sb_key');
-  if (url && key) {
-    document.getElementById('cfg-url').value = url;
-    document.getElementById('cfg-key').value = key;
-    initSupabase(url, key);
-  }
+  document.getElementById('config-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initSupabase(SUPABASE_URL, SUPABASE_KEY);
 });
 </script>
 </body>
