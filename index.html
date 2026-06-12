@@ -8,23 +8,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c26;
-    --accent: #e8ff47;
-    --accent2: #ff4757;
-    --text: #f0f0f0;
-    --text-muted: #888;
-    --border: #2a2a38;
+    --bg: #1e2128;
+    --surface: #272b33;
+    --surface2: #2f343e;
+    --accent: #4f8ef7;
+    --accent-light: #7aabff;
+    --accent2: #ff5c6c;
+    --green: #34c78a;
+    --text: #eef0f4;
+    --text-muted: #8b93a4;
+    --border: #363c48;
     --radius: 16px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-  /* HEADER */
   .app-header {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(10,10,15,0.95); backdrop-filter: blur(12px);
+    background: rgba(30,33,40,0.96); backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
     padding: 14px 20px;
     display: flex; align-items: center; justify-content: space-between;
@@ -32,16 +33,13 @@
   .header-title { font-size: 1.15rem; font-weight: 700; }
   .header-back {
     background: var(--surface); border: 1px solid var(--border); color: var(--text);
-    border-radius: 10px; padding: 8px 14px;
-    font-family: 'Cairo', sans-serif; font-size: 0.85rem; cursor: pointer;
+    border-radius: 10px; padding: 8px 14px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; cursor: pointer;
   }
 
-  /* NAV */
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(19,19,26,0.97); backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border);
-    display: flex; z-index: 100;
+    background: rgba(39,43,51,0.97); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border); display: flex; z-index: 100;
     padding-bottom: env(safe-area-inset-bottom);
   }
   .nav-item {
@@ -59,9 +57,10 @@
 
   /* BUTTONS */
   .btn-primary {
-    width: 100%; background: var(--accent); color: #000; border: none;
+    width: 100%; background: var(--accent); color: #fff; border: none;
     border-radius: 12px; padding: 14px; font-family: 'Cairo', sans-serif;
     font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(79,142,247,0.3);
   }
   .btn-primary:active { transform: scale(0.98); }
   .btn-secondary {
@@ -69,54 +68,67 @@
     border-radius: 12px; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; cursor: pointer;
   }
   .btn-save {
-    flex: 2; background: var(--accent); border: none; color: #000;
-    border-radius: 12px; padding: 13px; font-family: 'Cairo', sans-serif;
-    font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    flex: 2; background: var(--accent); border: none; color: #fff;
+    border-radius: 12px; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer;
   }
   .quick-log-btn {
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; background: var(--accent); color: #000; border: none;
+    width: 100%; background: var(--accent); color: #fff; border: none;
     border-radius: var(--radius); padding: 16px; font-family: 'Cairo', sans-serif;
     font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 24px; transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(79,142,247,0.25);
   }
   .quick-log-btn:active { transform: scale(0.98); }
 
   .section-title {
-    font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
-    letter-spacing: 0.08em; margin-bottom: 12px; text-transform: uppercase;
+    font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 0.1em; margin-bottom: 12px; text-transform: uppercase;
   }
 
-  /* SEARCH BAR */
+  /* SEARCH */
   .search-bar {
     display: flex; align-items: center; gap: 10px;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
   }
-  .search-bar input {
-    flex: 1; background: none; border: none; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 0.9rem; outline: none;
-  }
+  .search-bar input { flex: 1; background: none; border: none; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 0.9rem; outline: none; }
   .search-bar input::placeholder { color: var(--text-muted); }
   .search-icon { color: var(--text-muted); font-size: 1rem; }
 
   /* HOME */
   .greeting { margin-bottom: 20px; }
   .greeting h1 { font-size: 1.6rem; font-weight: 900; line-height: 1.2; }
-  .greeting h1 span { color: var(--accent); }
+  .greeting h1 span { color: var(--accent-light); }
   .greeting p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+  /* BODY WEIGHT STRIP */
+  .bw-strip {
+    background: linear-gradient(135deg, #2f3a50, #243048);
+    border: 1px solid #3a4a66;
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .bw-info { flex: 1; }
+  .bw-label { font-size: 0.75rem; color: #7aabff; font-weight: 700; margin-bottom: 3px; }
+  .bw-value { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1; }
+  .bw-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+  .bw-btn {
+    background: rgba(79,142,247,0.2); border: 1px solid rgba(79,142,247,0.4);
+    color: var(--accent-light); border-radius: 10px; padding: 8px 14px;
+    font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  }
 
   /* MUSCLE GRID */
   .muscle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
   .muscle-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; cursor: pointer;
-    transition: all 0.2s; position: relative; overflow: hidden;
+    border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
   }
   .muscle-card::before {
-    content: ''; position: absolute; top: 0; right: 0;
-    width: 4px; height: 100%; border-radius: 0 var(--radius) var(--radius) 0;
+    content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
+    border-radius: 0 var(--radius) var(--radius) 0;
   }
-  .muscle-card:active { transform: scale(0.97); }
+  .muscle-card:active { transform: scale(0.97); background: var(--surface2); }
   .muscle-card .muscle-icon { font-size: 1.8rem; margin-bottom: 6px; }
   .muscle-card .muscle-name { font-size: 0.9rem; font-weight: 700; }
   .muscle-card .muscle-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
@@ -126,18 +138,25 @@
   .muscle-card[data-muscle="كتف"]::before { background: #7c4dff; }
   .muscle-card[data-muscle="بايسبس / ترايسبس"]::before { background: #ffd700; }
 
-  /* SESSION CARD */
+  /* RECENT SESSIONS - with quick log btn */
   .session-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.15s;
+    border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px; transition: all 0.15s;
   }
   .session-card:active { background: var(--surface2); }
-  .session-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
-  .session-info { flex: 1; min-width: 0; }
-  .session-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .session-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-  .session-weight { font-size: 1rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .session-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .session-info { flex: 1; min-width: 0; cursor: pointer; }
+  .session-name { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .session-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+  .session-weight { font-size: 0.95rem; font-weight: 700; color: var(--accent-light); white-space: nowrap; }
+  .session-quick-log {
+    background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3);
+    color: var(--accent-light); border-radius: 8px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-size: 1.1rem; flex-shrink: 0; transition: all 0.15s;
+  }
+  .session-quick-log:active { background: rgba(79,142,247,0.3); }
 
   /* EXERCISE ITEM */
   .exercise-item {
@@ -147,12 +166,10 @@
   }
   .exercise-item:active { background: var(--surface2); }
   .exercise-thumb {
-    width: 50px; height: 50px; border-radius: 12px;
-    background: var(--surface2); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; overflow: hidden;
+    width: 50px; height: 50px; border-radius: 12px; background: var(--surface2); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden;
   }
-  .exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #1a1a24; }
+  .exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
   .exercise-info { flex: 1; min-width: 0; }
   .exercise-name { font-size: 0.9rem; font-weight: 600; }
   .exercise-last { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
@@ -165,18 +182,15 @@
   .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
   .icon-btn.danger:hover { color: var(--accent2); border-color: var(--accent2); }
 
-  /* PR BADGE */
+  /* BADGES */
   .pr-badge {
     display: inline-flex; align-items: center; gap: 3px;
-    background: rgba(232,255,71,0.12); color: var(--accent);
-    border: 1px solid rgba(232,255,71,0.3);
-    border-radius: 6px; padding: 2px 6px;
+    background: rgba(79,142,247,0.15); color: var(--accent-light);
+    border: 1px solid rgba(79,142,247,0.3); border-radius: 6px; padding: 2px 6px;
     font-size: 0.7rem; font-weight: 700;
   }
-
-  /* COMPARISON ARROW */
-  .compare-up { color: #00d4aa; font-weight: 700; font-size: 0.8rem; }
-  .compare-down { color: #ff4757; font-weight: 700; font-size: 0.8rem; }
+  .compare-up { color: var(--green); font-weight: 700; font-size: 0.8rem; }
+  .compare-down { color: var(--accent2); font-weight: 700; font-size: 0.8rem; }
   .compare-same { color: var(--text-muted); font-size: 0.8rem; }
 
   /* LOG */
@@ -186,17 +200,17 @@
     display: flex; align-items: center; gap: 12px;
   }
   .log-exercise-thumb {
-    width: 64px; height: 64px; border-radius: 12px;
-    background: var(--surface2); display: flex; align-items: center;
-    justify-content: center; font-size: 1.8rem; overflow: hidden; flex-shrink: 0;
+    width: 64px; height: 64px; border-radius: 12px; background: var(--surface2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.8rem; overflow: hidden; flex-shrink: 0;
   }
-  .log-exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #1a1a24; }
+  .log-exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
   .prev-record {
-    background: var(--surface2); border-radius: 12px; padding: 12px 16px;
+    background: linear-gradient(135deg, #2a3245, #243040);
+    border: 1px solid #3a4a66; border-radius: 12px; padding: 12px 16px;
     margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
   }
   .prev-record .label { font-size: 0.78rem; color: var(--text-muted); }
-  .prev-record .value { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+  .prev-record .value { font-size: 0.9rem; font-weight: 700; color: var(--accent-light); }
 
   .sets-container { margin-bottom: 20px; }
   .set-row { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
@@ -204,10 +218,9 @@
   .set-input {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 10px; padding: 12px 10px; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 600;
-    text-align: center; width: 100%;
+    font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 600; text-align: center; width: 100%;
   }
-  .set-input:focus { outline: none; border-color: var(--accent); }
+  .set-input:focus { outline: none; border-color: var(--accent); background: var(--surface2); }
   .set-input::placeholder { color: var(--text-muted); font-weight: 400; }
   .set-label-row { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; margin-bottom: 6px; }
   .set-label { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
@@ -241,18 +254,31 @@
   .cal-nav { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
   .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
   .cal-day-name { font-size: 0.65rem; color: var(--text-muted); text-align: center; padding: 4px 0; font-weight: 700; }
-  .cal-day {
-    aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; color: var(--text-muted); cursor: default;
-  }
-  .cal-day.has-session { background: rgba(232,255,71,0.15); color: var(--accent); font-weight: 700; border: 1px solid rgba(232,255,71,0.3); cursor: pointer; }
-  .cal-day.today { border: 1px solid var(--accent); color: var(--accent); }
-  .cal-day.today.has-session { background: rgba(232,255,71,0.25); }
+  .cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-muted); cursor: default; }
+  .cal-day.has-session { background: rgba(79,142,247,0.18); color: var(--accent-light); font-weight: 700; border: 1px solid rgba(79,142,247,0.35); cursor: pointer; }
+  .cal-day.today { border: 1px solid var(--accent); color: var(--accent-light); }
+  .cal-day.today.has-session { background: rgba(79,142,247,0.28); }
   .cal-day.empty { opacity: 0; pointer-events: none; }
   .cal-stats { display: flex; gap: 10px; margin-bottom: 20px; }
   .cal-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
-  .cal-stat .val { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  .cal-stat .val { font-size: 1.4rem; font-weight: 700; color: var(--accent-light); }
   .cal-stat .lbl { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* BODY WEIGHT SCREEN */
+  .bw-chart-area {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 16px; overflow-x: auto;
+  }
+  .bw-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; min-width: 100%; }
+  .bw-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; min-width: 30px; }
+  .bw-bar { width: 100%; background: linear-gradient(180deg, var(--accent), #2a4a80); border-radius: 6px 6px 0 0; transition: height 0.4s ease; }
+  .bw-bar-label { font-size: 0.6rem; color: var(--text-muted); white-space: nowrap; }
+  .bw-entry { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .bw-entry-weight { font-size: 1.1rem; font-weight: 700; color: var(--accent-light); }
+  .bw-entry-date { font-size: 0.75rem; color: var(--text-muted); }
+  .bw-entry-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .bw-trend-up { color: var(--accent2); font-size: 0.8rem; font-weight: 700; }
+  .bw-trend-down { color: var(--green); font-size: 0.8rem; font-weight: 700; }
 
   /* MANAGE */
   .manage-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -261,49 +287,32 @@
     border-radius: 10px; padding: 10px; font-family: 'Cairo', sans-serif; font-size: 0.85rem;
     cursor: pointer; transition: all 0.2s; text-align: center;
   }
-  .manage-tab.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  .manage-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 
   /* DETAIL */
   .exercise-detail-img {
     width: 100%; height: 220px; border-radius: var(--radius); margin-bottom: 16px;
-    background: var(--surface); display: flex; align-items: center; justify-content: center;
-    font-size: 4rem; overflow: hidden;
+    background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 4rem; overflow: hidden;
   }
-  .exercise-detail-img img { width: 100%; height: 100%; object-fit: contain; background: #13131a; }
+  .exercise-detail-img img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
   .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
-  .stat-box .stat-val { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+  .stat-box .stat-val { font-size: 1.3rem; font-weight: 700; color: var(--accent-light); }
   .stat-box .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
 
   /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px); z-index: 500; display: none;
-    align-items: flex-end; justify-content: center;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 500; display: none; align-items: flex-end; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 24px 24px 0 0; padding: 24px 20px;
-    width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-    animation: slideUp 0.3s ease;
-  }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: 24px 20px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
   .modal-drag { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
   .form-group { margin-bottom: 14px; }
   .form-label { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; display: block; }
-  .form-input, .form-select {
-    width: 100%; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 14px; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 0.9rem;
-  }
+  .form-input, .form-select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 0.9rem; }
   .form-input:focus, .form-select:focus { outline: none; border-color: var(--accent); }
   .form-select option { background: var(--surface); }
-  .image-upload-area {
-    border: 2px dashed var(--border); border-radius: 12px; padding: 20px;
-    text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-  }
+  .image-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
   .image-upload-area:hover { border-color: var(--accent); }
   .image-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .preview-img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-top: 10px; background: var(--bg); }
@@ -312,17 +321,11 @@
   .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
 
   /* TOAST */
-  .toast {
-    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 10px 20px; font-size: 0.85rem;
-    z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap;
-  }
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 20px; font-size: 0.85rem; z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap; }
   .toast.show { opacity: 1; }
-  .toast.success { border-color: var(--accent); color: var(--accent); }
+  .toast.success { border-color: var(--accent); color: var(--accent-light); }
   .toast.error { border-color: var(--accent2); color: var(--accent2); }
 
-  /* LOADER */
   .loader { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; gap: 10px; }
   .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -332,15 +335,11 @@
 </style>
 </head>
 <body>
-
 <div id="app">
   <div class="app-header">
     <div class="header-title" id="header-title">🏋️ جيم تراكر</div>
-    <div>
-      <button class="header-back" id="back-btn" style="display:none;" onclick="goBack()">→ رجوع</button>
-    </div>
+    <div><button class="header-back" id="back-btn" style="display:none;" onclick="goBack()">→ رجوع</button></div>
   </div>
-
   <div class="main">
 
     <!-- HOME -->
@@ -349,6 +348,17 @@
         <h1>يلا <span>نتدرب 💪</span></h1>
         <p id="today-date"></p>
       </div>
+
+      <!-- BODY WEIGHT STRIP -->
+      <div class="bw-strip" id="bw-strip">
+        <div class="bw-info">
+          <div class="bw-label">⚖️ وزن الجسم</div>
+          <div class="bw-value" id="bw-current">-- كج</div>
+          <div class="bw-sub" id="bw-change"></div>
+        </div>
+        <button class="bw-btn" onclick="navigate('weight')">تسجيل</button>
+      </div>
+
       <button class="quick-log-btn" onclick="showExercisePicker()">
         <span style="font-size:1.3rem">+</span><span>تسجيل تمرين</span>
       </button>
@@ -359,18 +369,17 @@
     </div>
 
     <!-- EXERCISE LIST -->
-    <div class="screen" id="screen-exercises">
-      <div id="exercise-list-content"></div>
-    </div>
+    <div class="screen" id="screen-exercises"><div id="exercise-list-content"></div></div>
 
     <!-- LOG -->
-    <div class="screen" id="screen-log">
-      <div id="log-content"></div>
-    </div>
+    <div class="screen" id="screen-log"><div id="log-content"></div></div>
 
-    <!-- HISTORY -->
-    <div class="screen" id="screen-history">
-      <div id="history-content"></div>
+    <!-- HISTORY / CALENDAR -->
+    <div class="screen" id="screen-history"><div id="history-content"></div></div>
+
+    <!-- BODY WEIGHT SCREEN -->
+    <div class="screen" id="screen-weight">
+      <div id="weight-content"></div>
     </div>
 
     <!-- MANAGE -->
@@ -384,22 +393,15 @@
     </div>
 
     <!-- DETAIL -->
-    <div class="screen" id="screen-detail">
-      <div id="detail-content"></div>
-    </div>
+    <div class="screen" id="screen-detail"><div id="detail-content"></div></div>
 
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="navigate('home')" data-nav="home">
-      <span class="nav-icon">🏠</span><span>الرئيسية</span>
-    </button>
-    <button class="nav-item" onclick="navigate('history')" data-nav="history">
-      <span class="nav-icon">📅</span><span>التقويم</span>
-    </button>
-    <button class="nav-item" onclick="navigate('manage')" data-nav="manage">
-      <span class="nav-icon">⚙️</span><span>إدارة</span>
-    </button>
+    <button class="nav-item active" onclick="navigate('home')" data-nav="home"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
+    <button class="nav-item" onclick="navigate('history')" data-nav="history"><span class="nav-icon">📅</span><span>التقويم</span></button>
+    <button class="nav-item" onclick="navigate('weight')" data-nav="weight"><span class="nav-icon">⚖️</span><span>الوزن</span></button>
+    <button class="nav-item" onclick="navigate('manage')" data-nav="manage"><span class="nav-icon">⚙️</span><span>إدارة</span></button>
   </nav>
 </div>
 
@@ -408,42 +410,46 @@
   <div class="modal">
     <div class="modal-drag"></div>
     <div class="modal-title">اختار التمرين</div>
-    <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="picker-search" placeholder="ابحث عن تمرين..." oninput="onPickerSearch(this.value)" />
-    </div>
+    <div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="picker-search" placeholder="ابحث عن تمرين..." oninput="onPickerSearch(this.value)" /></div>
     <div id="picker-muscles" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
     <div id="picker-list"></div>
   </div>
 </div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- ADD/EDIT EXERCISE MODAL -->
 <div class="modal-overlay" id="modal-exercise">
   <div class="modal">
     <div class="modal-drag"></div>
     <div class="modal-title" id="modal-exercise-title">إضافة تمرين</div>
-    <div class="form-group">
-      <label class="form-label">اسم التمرين</label>
-      <input type="text" class="form-input" id="ex-name" placeholder="مثال: Bench Press" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">المجموعة العضلية</label>
-      <select class="form-select" id="ex-muscle"></select>
-    </div>
+    <div class="form-group"><label class="form-label">اسم التمرين</label><input type="text" class="form-input" id="ex-name" placeholder="مثال: Bench Press" /></div>
+    <div class="form-group"><label class="form-label">المجموعة العضلية</label><select class="form-select" id="ex-muscle"></select></div>
     <div class="form-group">
       <label class="form-label">صورة التمرين</label>
       <div class="image-upload-area">
         <input type="file" accept="image/*" id="ex-image" onchange="previewImage(this)" />
-        <div class="upload-icon">📷</div>
-        <div class="upload-text">اضغط لرفع صورة</div>
+        <div class="upload-icon">📷</div><div class="upload-text">اضغط لرفع صورة</div>
         <img id="img-preview" class="preview-img" style="display:none;" />
       </div>
     </div>
-    <input type="hidden" id="ex-id" />
-    <input type="hidden" id="ex-current-img" />
+    <input type="hidden" id="ex-id" /><input type="hidden" id="ex-current-img" />
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-exercise')">إلغاء</button>
       <button class="btn-save" onclick="saveExercise()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD WEIGHT MODAL -->
+<div class="modal-overlay" id="modal-weight">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">تسجيل وزن الجسم</div>
+    <div class="form-group"><label class="form-label">الوزن (كج)</label><input type="number" class="form-input" id="bw-input" placeholder="مثال: 85.5" inputmode="decimal" step="0.1" /></div>
+    <div class="form-group"><label class="form-label">التاريخ</label><input type="date" class="form-input" id="bw-date" style="direction:ltr;" /></div>
+    <div class="form-group"><label class="form-label">ملاحظة (اختياري)</label><input type="text" class="form-input" id="bw-note" placeholder="مثال: صايم، بعد تمرين..." /></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-weight')">إلغاء</button>
+      <button class="btn-save" onclick="saveBodyWeight()">حفظ</button>
     </div>
   </div>
 </div>
@@ -487,7 +493,7 @@ const DEFAULT_EXERCISES = [
   { name: 'cable v grip lat pulldown', muscle: 'ظهر' }, { name: 'back extension', muscle: 'ظهر' },
 ];
 
-// ── INIT ──────────────────────────────────────────────
+// ── INIT ──
 async function initSupabase(url, key) {
   try {
     sbClient = window.supabase.createClient(url, key);
@@ -506,7 +512,7 @@ async function setupDatabase() {
   }
 }
 
-// ── APP ───────────────────────────────────────────────
+// ── APP ──
 let currentScreen = 'home';
 let screenStack = [];
 let currentExercise = null;
@@ -517,8 +523,7 @@ let calYear, calMonth;
 
 function initApp() {
   const now = new Date();
-  calYear = now.getFullYear();
-  calMonth = now.getMonth();
+  calYear = now.getFullYear(); calMonth = now.getMonth();
   document.getElementById('today-date').textContent = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   loadHome();
 }
@@ -528,7 +533,7 @@ function navigate(screen) {
   showScreen(screen);
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === screen));
   document.getElementById('back-btn').style.display = 'none';
-  document.getElementById('header-title').textContent = { home: '🏋️ جيم تراكر', history: '📅 التقويم', manage: '⚙️ الإدارة' }[screen];
+  document.getElementById('header-title').textContent = { home: '🏋️ جيم تراكر', history: '📅 التقويم', weight: '⚖️ وزن الجسم', manage: '⚙️ الإدارة' }[screen];
 }
 
 function showScreen(name) {
@@ -537,6 +542,7 @@ function showScreen(name) {
   currentScreen = name;
   if (name === 'home') loadHome();
   if (name === 'history') loadHistory();
+  if (name === 'weight') loadWeightScreen();
   if (name === 'manage') loadManage();
 }
 
@@ -553,7 +559,7 @@ function pushScreen(name, title) {
 function goBack() {
   if (screenStack.length > 0) {
     const prev = screenStack.pop();
-    if (['home','history','manage'].includes(prev)) navigate(prev);
+    if (['home','history','weight','manage'].includes(prev)) navigate(prev);
     else {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-' + prev).classList.add('active');
@@ -563,7 +569,7 @@ function goBack() {
   }
 }
 
-// ── HOME ──────────────────────────────────────────────
+// ── HOME ──
 async function loadHome() {
   const { data: exercises } = await sbClient.from('exercises').select('muscle');
   const counts = {};
@@ -576,6 +582,20 @@ async function loadHome() {
       <div class="muscle-count">${counts[m.name]||0} تمرين</div>
     </div>`).join('');
 
+  // Body weight strip
+  const { data: bwData } = await sbClient.from('body_weight').select('*').order('recorded_at', { ascending: false }).limit(2);
+  if (bwData && bwData.length > 0) {
+    const latest = bwData[0];
+    document.getElementById('bw-current').textContent = latest.weight + ' كج';
+    if (bwData.length > 1) {
+      const diff = (latest.weight - bwData[1].weight).toFixed(1);
+      const sign = diff > 0 ? '+' : '';
+      document.getElementById('bw-change').textContent = `${sign}${diff} كج من آخر قياس`;
+      document.getElementById('bw-change').style.color = diff > 0 ? '#ff5c6c' : '#34c78a';
+    }
+  }
+
+  // Recent sessions with quick log btn
   const { data: sessions } = await sbClient.from('sessions').select('*').order('logged_at', { ascending: false }).limit(8);
   const recentEl = document.getElementById('recent-sessions');
   if (!sessions || sessions.length === 0) {
@@ -586,39 +606,34 @@ async function loadHome() {
     const muscle = MUSCLES.find(m => m.name === s.muscle) || { icon: '💪', color: '#888' };
     const maxW = Math.max(...(s.sets||[]).map(x => x.weight||0));
     const date = new Date(s.logged_at).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric' });
-    return `<div class="session-card" onclick="openExerciseDetail('${s.exercise_id}')">
+    return `<div class="session-card">
       <div class="session-icon" style="background:${muscle.color}22;">${muscle.icon}</div>
-      <div class="session-info"><div class="session-name">${s.exercise_name}</div><div class="session-meta">${date} · ${(s.sets||[]).length} مجموعات</div></div>
-      <div class="session-weight">${maxW} كج</div>
+      <div class="session-info" onclick="openExerciseDetail('${s.exercise_id}')">
+        <div class="session-name">${s.exercise_name}</div>
+        <div class="session-meta">${date} · ${(s.sets||[]).length} مجموعات · ${maxW} كج</div>
+      </div>
+      <button class="session-quick-log" onclick="openLogScreen('${s.exercise_id}')" title="سجل نفس التمرين">➕</button>
     </div>`;
   }).join('');
 }
 
-// ── EXERCISE LIST ──────────────────────────────────────
+// ── EXERCISE LIST ──
 async function openMuscleExercises(muscle) {
   const m = MUSCLES.find(x => x.name === muscle);
   pushScreen('exercises', `${m?.icon||''} ${muscle}`);
   const el = document.getElementById('exercise-list-content');
   el.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث في التمارين..." oninput="filterExerciseList(this.value)" id="ex-list-search"/></div><div id="ex-list-items"><div class="loader"><div class="spinner"></div></div></div>`;
-
   const { data: allEx } = await sbClient.from('exercises').select('*').eq('muscle', muscle).order('name');
   const ids = (allEx||[]).map(e => e.id);
-  let lastMap = {};
+  let lastMap = {}, prMap = {};
   if (ids.length > 0) {
     const { data: lastSessions } = await sbClient.from('sessions').select('exercise_id, sets, logged_at').in('exercise_id', ids).order('logged_at', { ascending: false });
-    (lastSessions||[]).forEach(s => { if (!lastMap[s.exercise_id]) lastMap[s.exercise_id] = s; });
-  }
-
-  // Get all sessions to find PRs
-  let prMap = {};
-  if (ids.length > 0) {
-    const { data: allSess } = await sbClient.from('sessions').select('exercise_id, sets').in('exercise_id', ids);
-    (allSess||[]).forEach(s => {
+    (lastSessions||[]).forEach(s => {
+      if (!lastMap[s.exercise_id]) lastMap[s.exercise_id] = s;
       const w = Math.max(...(s.sets||[]).map(x => x.weight||0));
       if (!prMap[s.exercise_id] || w > prMap[s.exercise_id]) prMap[s.exercise_id] = w;
     });
   }
-
   window._exListData = { exercises: allEx||[], lastMap, prMap };
   renderExerciseList(allEx||[], lastMap, prMap);
 }
@@ -626,8 +641,7 @@ async function openMuscleExercises(muscle) {
 function filterExerciseList(q) {
   if (!window._exListData) return;
   const { exercises, lastMap, prMap } = window._exListData;
-  const filtered = q ? exercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : exercises;
-  renderExerciseList(filtered, lastMap, prMap);
+  renderExerciseList(q ? exercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : exercises, lastMap, prMap);
 }
 
 function renderExerciseList(exercises, lastMap, prMap) {
@@ -639,7 +653,7 @@ function renderExerciseList(exercises, lastMap, prMap) {
     const pr = prMap[ex.id] || 0;
     const lastText = last ? `آخر: ${lastW} كج · ${new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}` : 'لم يُسجَّل بعد';
     const prBadge = pr > 0 ? `<span class="pr-badge">🏆 ${pr} كج</span>` : '';
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#1a1a24;border-radius:12px;" />` : getMuscleIcon(ex.muscle);
+    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;" />` : getMuscleIcon(ex.muscle);
     return `<div class="exercise-item">
       <div class="exercise-thumb" onclick="openExerciseDetail('${ex.id}')">${thumb}</div>
       <div class="exercise-info" onclick="openExerciseDetail('${ex.id}')">
@@ -656,22 +670,17 @@ function getMuscleIcon(muscle) {
   return `<span style="font-size:1.4rem;">${m?.icon||'💪'}</span>`;
 }
 
-// ── LOG SESSION ────────────────────────────────────────
+// ── LOG SESSION ──
 let setCount = 0;
 async function openLogScreen(exerciseId) {
   closeModal('modal-picker');
   pushScreen('log', 'تسجيل جلسة');
   const { data: ex } = await sbClient.from('exercises').select('*').eq('id', exerciseId).single();
   currentExercise = ex;
-
   const { data: lastSess } = await sbClient.from('sessions').select('*').eq('exercise_id', exerciseId).order('logged_at', { ascending: false }).limit(2);
-  const last = lastSess?.[0];
-  const prev = lastSess?.[1];
+  const last = lastSess?.[0], prev = lastSess?.[1];
   const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
-
-  const thumb = ex.image_url
-    ? `<div class="log-exercise-thumb"><img src="${ex.image_url}" /></div>`
-    : `<div class="log-exercise-thumb" style="background:${muscle.color}22;">${muscle.icon}</div>`;
+  const thumb = ex.image_url ? `<div class="log-exercise-thumb"><img src="${ex.image_url}" /></div>` : `<div class="log-exercise-thumb" style="background:${muscle.color}22;">${muscle.icon}</div>`;
 
   let prevHtml = '';
   if (last) {
@@ -685,27 +694,15 @@ async function openLogScreen(exerciseId) {
       else compareHtml = `<span class="compare-same">= نفس الوزن</span>`;
     }
     const date = new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'});
-    prevHtml = `<div class="prev-record">
-      <span style="font-size:1.3rem;">🏆</span>
-      <div style="flex:1;">
-        <div class="label">آخر جلسة (${date})</div>
-        <div class="value">${lastMaxW} كج · ${(last.sets||[]).length} مجموعات ${compareHtml}</div>
-      </div>
-    </div>`;
+    prevHtml = `<div class="prev-record"><span style="font-size:1.3rem;">🏆</span><div style="flex:1;"><div class="label">آخر جلسة (${date})</div><div class="value">${lastMaxW} كج · ${(last.sets||[]).length} مجموعات ${compareHtml}</div></div></div>`;
   }
 
   const initSets = last?.sets?.length ? last.sets : Array(3).fill({ weight: '', reps: '' });
   setCount = initSets.length;
-
   const todayStr = new Date().toISOString().split('T')[0];
+
   document.getElementById('log-content').innerHTML = `
-    <div class="log-header">
-      ${thumb}
-      <div>
-        <div style="font-size:1rem;font-weight:700;">${ex.name}</div>
-        <div style="font-size:0.8rem;color:${muscle.color};margin-top:3px;">${ex.muscle}</div>
-      </div>
-    </div>
+    <div class="log-header">${thumb}<div><div style="font-size:1rem;font-weight:700;">${ex.name}</div><div style="font-size:0.8rem;color:${muscle.color};margin-top:3px;">${ex.muscle}</div></div></div>
     ${prevHtml}
     <div class="section-title">المجموعات</div>
     <div class="set-label-row"><div></div><div class="set-label">الوزن (كج)</div><div class="set-label">التكرارات</div><div></div></div>
@@ -727,15 +724,8 @@ function buildSetRow(num, weight, reps) {
     <button class="icon-btn danger" onclick="removeSetRow(${num})">✕</button>
   </div>`;
 }
-
-function addSetRow() {
-  setCount++;
-  document.getElementById('sets-rows').insertAdjacentHTML('beforeend', buildSetRow(setCount, '', ''));
-}
-function removeSetRow(num) {
-  const row = document.getElementById('set-row-' + num);
-  if (row && document.querySelectorAll('.set-row').length > 1) row.remove();
-}
+function addSetRow() { setCount++; document.getElementById('sets-rows').insertAdjacentHTML('beforeend', buildSetRow(setCount, '', '')); }
+function removeSetRow(num) { const row = document.getElementById('set-row-' + num); if (row && document.querySelectorAll('.set-row').length > 1) row.remove(); }
 
 async function saveSession() {
   const rows = document.querySelectorAll('.set-row');
@@ -753,67 +743,37 @@ async function saveSession() {
   goBack();
 }
 
-// ── EXERCISE DETAIL ────────────────────────────────────
+// ── EXERCISE DETAIL ──
 async function openExerciseDetail(exerciseId) {
   pushScreen('detail', 'تفاصيل التمرين');
   const el = document.getElementById('detail-content');
   el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-
   const { data: ex } = await sbClient.from('exercises').select('*').eq('id', exerciseId).single();
   const { data: sessions } = await sbClient.from('sessions').select('*').eq('exercise_id', exerciseId).order('logged_at', { ascending: false }).limit(30);
-
   const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
   const allWeights = (sessions||[]).flatMap(s => (s.sets||[]).map(x => x.weight||0));
   const pr = allWeights.length ? Math.max(...allWeights) : 0;
   const totalSessions = (sessions||[]).length;
   const avgWeight = allWeights.length ? (allWeights.reduce((a,b)=>a+b,0)/allWeights.length).toFixed(1) : 0;
-
-  const thumbHtml = ex.image_url
-    ? `<div class="exercise-detail-img"><img src="${ex.image_url}" /></div>`
-    : `<div class="exercise-detail-img" style="background:${muscle.color}22;">${muscle.icon}</div>`;
-
+  const thumbHtml = ex.image_url ? `<div class="exercise-detail-img"><img src="${ex.image_url}" /></div>` : `<div class="exercise-detail-img" style="background:${muscle.color}22;">${muscle.icon}</div>`;
   const historyHtml = (sessions||[]).map((s, idx) => {
     const date = new Date(s.logged_at).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});
     const maxW = Math.max(...(s.sets||[]).map(x=>x.weight||0));
     const prevS = sessions[idx+1];
     const prevMaxW = prevS ? Math.max(...(prevS.sets||[]).map(x=>x.weight||0)) : null;
-    let compareHtml = '';
-    if (prevMaxW !== null) {
-      const diff = maxW - prevMaxW;
-      if (diff > 0) compareHtml = `<span class="compare-up">↑ +${diff}</span>`;
-      else if (diff < 0) compareHtml = `<span class="compare-down">↓ ${diff}</span>`;
-      else compareHtml = `<span class="compare-same">→</span>`;
-    }
+    let cmp = '';
+    if (prevMaxW !== null) { const d = maxW-prevMaxW; cmp = d>0?`<span class="compare-up">↑ +${d}</span>`:d<0?`<span class="compare-down">↓ ${d}</span>`:`<span class="compare-same">→</span>`; }
     const isPR = maxW === pr && pr > 0;
     const chips = (s.sets||[]).map((x,i) => `<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
-    return `<div class="history-item">
-      <div class="history-item-header">
-        <div class="history-item-name">${date} ${compareHtml} ${isPR ? '<span class="pr-badge">🏆 PR</span>' : ''}</div>
-      </div>
-      <div class="history-sets-grid">${chips}</div>
-      ${s.notes ? `<div style="font-size:0.78rem;color:var(--text-muted);margin-top:8px;">📝 ${s.notes}</div>` : ''}
-    </div>`;
+    return `<div class="history-item"><div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div><div class="history-sets-grid">${chips}</div>${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:8px;">📝 ${s.notes}</div>`:''}</div>`;
   }).join('') || '<div class="empty-state"><div class="empty-icon">📊</div><p>لا يوجد تاريخ بعد</p></div>';
-
-  el.innerHTML = `
-    ${thumbHtml}
-    <div style="font-size:1.2rem;font-weight:700;margin-bottom:4px;">${ex.name}</div>
-    <div style="font-size:0.85rem;color:${muscle.color};margin-bottom:16px;">${ex.muscle}</div>
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-val">${pr} 🏆</div><div class="stat-label">أعلى وزن</div></div>
-      <div class="stat-box"><div class="stat-val">${totalSessions}</div><div class="stat-label">جلسات</div></div>
-      <div class="stat-box"><div class="stat-val">${avgWeight}</div><div class="stat-label">متوسط الوزن</div></div>
-    </div>
-    <button class="quick-log-btn" onclick="openLogScreen('${ex.id}')">+ تسجيل جلسة</button>
-    <div class="section-title" style="margin-top:8px;">التاريخ والمقارنة</div>
-    ${historyHtml}`;
+  el.innerHTML = `${thumbHtml}<div style="font-size:1.2rem;font-weight:700;margin-bottom:4px;">${ex.name}</div><div style="font-size:0.85rem;color:${muscle.color};margin-bottom:16px;">${ex.muscle}</div><div class="stats-row"><div class="stat-box"><div class="stat-val">${pr} 🏆</div><div class="stat-label">أعلى وزن</div></div><div class="stat-box"><div class="stat-val">${totalSessions}</div><div class="stat-label">جلسات</div></div><div class="stat-box"><div class="stat-val">${avgWeight}</div><div class="stat-label">متوسط</div></div></div><button class="quick-log-btn" onclick="openLogScreen('${ex.id}')">+ تسجيل جلسة</button><div class="section-title" style="margin-top:8px;">التاريخ</div>${historyHtml}`;
 }
 
-// ── HISTORY / CALENDAR ─────────────────────────────────
+// ── HISTORY ──
 async function loadHistory() {
   const el = document.getElementById('history-content');
   el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-
   const { data: sessions } = await sbClient.from('sessions').select('*').order('logged_at', { ascending: false }).limit(200);
   renderCalendar(sessions||[]);
 }
@@ -821,218 +781,183 @@ async function loadHistory() {
 function renderCalendar(sessions) {
   const el = document.getElementById('history-content');
   const now = new Date();
-
-  // Build set of dates with sessions
   const sessionDates = {};
-  (sessions||[]).forEach(s => {
-    const d = new Date(s.logged_at);
-    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    if (!sessionDates[key]) sessionDates[key] = [];
-    sessionDates[key].push(s);
-  });
-
-  // Calendar for calYear/calMonth
+  (sessions||[]).forEach(s => { const d=new Date(s.logged_at); const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; if(!sessionDates[key]) sessionDates[key]=[]; sessionDates[key].push(s); });
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
   const monthName = new Date(calYear, calMonth, 1).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' });
-
-  // Stats for this month
-  const thisMonthSessions = sessions.filter(s => { const d = new Date(s.logged_at); return d.getMonth()===calMonth && d.getFullYear()===calYear; });
+  const thisMonthSessions = sessions.filter(s => { const d=new Date(s.logged_at); return d.getMonth()===calMonth && d.getFullYear()===calYear; });
   const uniqueDays = new Set(thisMonthSessions.map(s => new Date(s.logged_at).getDate())).size;
-  const totalEx = thisMonthSessions.length;
-
-  // Day names (Arabic, Sunday first)
   const dayNames = ['أح','إث','ثل','أر','خم','جم','سب'];
-
   let calCells = '';
-  // Offset
   for (let i=0; i<firstDay; i++) calCells += `<div class="cal-day empty"></div>`;
   for (let d=1; d<=daysInMonth; d++) {
-    const key = `${calYear}-${calMonth}-${d}`;
-    const hasSess = !!sessionDates[key];
-    const isToday = calYear===now.getFullYear() && calMonth===now.getMonth() && d===now.getDate();
-    const classes = ['cal-day', hasSess?'has-session':'', isToday?'today':''].filter(Boolean).join(' ');
-    const onclick = hasSess ? `onclick="showDaySessions('${key}')"` : '';
-    calCells += `<div class="${classes}" ${onclick}>${d}</div>`;
+    const key=`${calYear}-${calMonth}-${d}`, hasSess=!!sessionDates[key], isToday=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
+    calCells += `<div class="${['cal-day',hasSess?'has-session':'',isToday?'today':''].filter(Boolean).join(' ')}" ${hasSess?`onclick="showDaySessions('${key}')"`:''}>${d}</div>`;
   }
-
-  // Recent sessions grouped
   const groups = {};
-  (sessions||[]).slice(0,60).forEach(s => {
-    const d = new Date(s.logged_at).toLocaleDateString('ar-EG',{weekday:'short',month:'short',day:'numeric'});
-    if (!groups[d]) groups[d] = [];
-    groups[d].push(s);
-  });
+  (sessions||[]).slice(0,60).forEach(s => { const d=new Date(s.logged_at).toLocaleDateString('ar-EG',{weekday:'short',month:'short',day:'numeric'}); if(!groups[d]) groups[d]=[]; groups[d].push(s); });
+  const histHtml = Object.entries(groups).map(([date, items]) =>
+    `<div class="history-date-group"><div class="history-date">${date}</div>${items.map(s => {
+      const muscle=MUSCLES.find(m=>m.name===s.muscle)||{icon:'💪',color:'#888'};
+      const chips=(s.sets||[]).map((x,i)=>`<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
+      return `<div class="history-item" onclick="openExerciseDetail('${s.exercise_id}')"><div class="history-item-header"><div class="history-item-name">${s.exercise_name}</div><span class="history-item-muscle" style="background:${muscle.color}22;color:${muscle.color};">${muscle.icon} ${s.muscle}</span></div><div class="history-sets-grid">${chips}</div></div>`;
+    }).join('')}</div>`).join('');
+  el.innerHTML = `<div class="calendar-header"><button class="cal-nav" onclick="changeMonth(-1)">‹</button><div class="calendar-month">${monthName}</div><button class="cal-nav" onclick="changeMonth(1)">›</button></div><div class="cal-stats"><div class="cal-stat"><div class="val">${uniqueDays}</div><div class="lbl">أيام تدريب</div></div><div class="cal-stat"><div class="val">${thisMonthSessions.length}</div><div class="lbl">تمرين مسجل</div></div><div class="cal-stat"><div class="val">${daysInMonth-uniqueDays}</div><div class="lbl">يوم راحة</div></div></div><div class="calendar-grid">${dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}${calCells}</div><div class="section-title">السجل التفصيلي</div>${histHtml||'<div class="empty-state"><div class="empty-icon">📅</div><p>لا يوجد تدريبات بعد</p></div>'}`;
+}
+function changeMonth(dir) { calMonth+=dir; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} loadHistory(); }
+function showDaySessions(key) { const [y,m,d]=key.split('-'); const label=new Date(parseInt(y),parseInt(m),parseInt(d)).toLocaleDateString('ar-EG',{weekday:'long',month:'long',day:'numeric'}); showToast('📅 '+label,'success'); }
 
-  const histHtml = Object.entries(groups).map(([date, items]) => {
-    const itemsHtml = items.map(s => {
-      const muscle = MUSCLES.find(m => m.name === s.muscle) || { icon: '💪', color: '#888' };
-      const chips = (s.sets||[]).map((x,i) => `<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
-      return `<div class="history-item" onclick="openExerciseDetail('${s.exercise_id}')">
-        <div class="history-item-header">
-          <div class="history-item-name">${s.exercise_name}</div>
-          <span class="history-item-muscle" style="background:${muscle.color}22;color:${muscle.color};">${muscle.icon} ${s.muscle}</span>
-        </div>
-        <div class="history-sets-grid">${chips}</div>
-      </div>`;
-    }).join('');
-    return `<div class="history-date-group"><div class="history-date">${date}</div>${itemsHtml}</div>`;
+// ── BODY WEIGHT ──
+async function loadWeightScreen() {
+  const el = document.getElementById('weight-content');
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  const { data: entries } = await sbClient.from('body_weight').select('*').order('recorded_at', { ascending: false }).limit(30);
+  const list = entries || [];
+  const latest = list[0];
+  const oldest = list[list.length-1];
+  const totalChange = list.length > 1 ? (latest.weight - oldest.weight).toFixed(1) : null;
+
+  // Chart
+  const chartEntries = [...list].reverse().slice(-14);
+  const maxW = Math.max(...chartEntries.map(e=>e.weight));
+  const minW = Math.min(...chartEntries.map(e=>e.weight));
+  const range = maxW - minW || 1;
+  const chartHtml = chartEntries.map(e => {
+    const h = Math.max(20, Math.round(((e.weight - minW) / range) * 80 + 20));
+    const d = new Date(e.recorded_at).toLocaleDateString('ar-EG',{month:'numeric',day:'numeric'});
+    return `<div class="bw-bar-wrap"><div class="bw-bar" style="height:${h}px;"></div><div class="bw-bar-label">${e.weight}</div><div class="bw-bar-label">${d}</div></div>`;
+  }).join('');
+
+  const entriesHtml = list.map((e, idx) => {
+    const next = list[idx+1];
+    let trend = '';
+    if (next) { const diff=(e.weight-next.weight).toFixed(1); trend = diff>0?`<span class="bw-trend-up">↑ +${diff}</span>`:`<span class="bw-trend-down">↓ ${diff}</span>`; }
+    const date = new Date(e.recorded_at).toLocaleDateString('ar-EG',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+    return `<div class="bw-entry"><div><div class="bw-entry-weight">${e.weight} كج ${trend}</div><div class="bw-entry-date">${date}</div>${e.note?`<div class="bw-entry-note">📝 ${e.note}</div>`:''}</div><button class="icon-btn danger" onclick="deleteWeight('${e.id}')">🗑️</button></div>`;
   }).join('');
 
   el.innerHTML = `
-    <div class="calendar-header">
-      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-      <div class="calendar-month">${monthName}</div>
-      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">الوزن الحالي</div>
+        <div style="font-size:2rem;font-weight:900;color:var(--accent-light);">${latest ? latest.weight+' كج' : '--'}</div>
+        ${totalChange !== null ? `<div style="font-size:0.8rem;color:${totalChange>0?'var(--accent2)':'var(--green)'};">${totalChange>0?'↑ +'+totalChange:'↓ '+totalChange} كج إجمالي</div>` : ''}
+      </div>
+      <button class="bw-btn" style="font-size:1rem;padding:12px 20px;" onclick="openAddWeightModal()">+ تسجيل</button>
     </div>
-    <div class="cal-stats">
-      <div class="cal-stat"><div class="val">${uniqueDays}</div><div class="lbl">أيام تدريب</div></div>
-      <div class="cal-stat"><div class="val">${totalEx}</div><div class="lbl">تمرين مسجل</div></div>
-      <div class="cal-stat"><div class="val">${daysInMonth - uniqueDays}</div><div class="lbl">يوم راحة</div></div>
-    </div>
-    <div class="calendar-grid">
-      ${dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}
-      ${calCells}
-    </div>
-    <div class="section-title">السجل التفصيلي</div>
-    ${histHtml || '<div class="empty-state"><div class="empty-icon">📅</div><p>لا يوجد تدريبات بعد</p></div>'}`;
+    ${chartEntries.length > 1 ? `<div class="bw-chart-area"><div class="section-title">آخر ${chartEntries.length} قياسات</div><div class="bw-chart">${chartHtml}</div></div>` : ''}
+    <div class="section-title">السجل</div>
+    ${entriesHtml || '<div class="empty-state"><div class="empty-icon">⚖️</div><p>لم تسجل وزنك بعد</p></div>'}`;
 }
 
-function changeMonth(dir) {
-  calMonth += dir;
-  if (calMonth > 11) { calMonth = 0; calYear++; }
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  loadHistory();
+function openAddWeightModal() {
+  document.getElementById('bw-input').value = '';
+  document.getElementById('bw-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('bw-note').value = '';
+  document.getElementById('modal-weight').classList.add('open');
+  document.getElementById('modal-weight').onclick = e => { if(e.target===document.getElementById('modal-weight')) closeModal('modal-weight'); };
 }
 
-function showDaySessions(key) {
-  // Scroll to that day's sessions in the list
-  const [y, m, d] = key.split('-');
-  const date = new Date(parseInt(y), parseInt(m), parseInt(d));
-  const label = date.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  // highlight in list - just show toast for now
-  showToast('📅 ' + label, 'success');
+async function saveBodyWeight() {
+  const weight = parseFloat(document.getElementById('bw-input').value);
+  const date = document.getElementById('bw-date').value;
+  const note = document.getElementById('bw-note').value.trim();
+  if (!weight || weight < 20 || weight > 300) { showToast('ادخل وزن صحيح', 'error'); return; }
+  const recordedAt = date ? new Date(date+'T08:00:00').toISOString() : new Date().toISOString();
+  const { error } = await sbClient.from('body_weight').insert({ weight, note: note||null, recorded_at: recordedAt });
+  if (error) { showToast('❌ ' + error.message, 'error'); return; }
+  showToast('✅ تم الحفظ', 'success');
+  closeModal('modal-weight');
+  if (currentScreen === 'weight') loadWeightScreen();
+  if (currentScreen === 'home') loadHome();
 }
 
-// ── MANAGE ─────────────────────────────────────────────
+async function deleteWeight(id) {
+  if (!confirm('هتحذف هذا القياس؟')) return;
+  await sbClient.from('body_weight').delete().eq('id', id);
+  showToast('تم الحذف', 'success');
+  loadWeightScreen();
+}
+
+// ── MANAGE ──
 async function loadManage() { await loadManageContent(); }
-
 function switchManageTab(tab) {
   manageTab = tab;
   document.querySelectorAll('.manage-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='exercises')||(i===1&&tab==='muscles')));
   document.getElementById('manage-add-btn').style.display = tab === 'exercises' ? 'flex' : 'none';
   loadManageContent();
 }
-
 async function loadManageContent() {
   const el = document.getElementById('manage-content');
   el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-
   if (manageTab === 'muscles') {
     const { data: exercises } = await sbClient.from('exercises').select('muscle');
     const counts = {};
     (exercises||[]).forEach(e => { counts[e.muscle] = (counts[e.muscle]||0)+1; });
-    el.innerHTML = MUSCLES.map(m => `<div class="exercise-item">
-      <div class="exercise-thumb" style="background:${m.color}22;font-size:1.4rem;display:flex;align-items:center;justify-content:center;">${m.icon}</div>
-      <div class="exercise-info"><div class="exercise-name">${m.name}</div><div class="exercise-last">${counts[m.name]||0} تمرين</div></div>
-    </div>`).join('');
+    el.innerHTML = MUSCLES.map(m => `<div class="exercise-item"><div class="exercise-thumb" style="background:${m.color}22;font-size:1.4rem;display:flex;align-items:center;justify-content:center;">${m.icon}</div><div class="exercise-info"><div class="exercise-name">${m.name}</div><div class="exercise-last">${counts[m.name]||0} تمرين</div></div></div>`).join('');
     return;
   }
-
-  const el2 = document.getElementById('manage-content');
-  el2.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث..." oninput="filterManageList(this.value)" id="manage-search"/></div><div id="manage-items"><div class="loader"><div class="spinner"></div></div></div>`;
-
+  el.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث..." oninput="filterManageList(this.value)" id="manage-search"/></div><div id="manage-items"><div class="loader"><div class="spinner"></div></div></div>`;
   const { data: exercises } = await sbClient.from('exercises').select('*').order('muscle').order('name');
   window._manageExercises = exercises || [];
   renderManageList(exercises||[]);
 }
-
-function filterManageList(q) {
-  if (!window._manageExercises) return;
-  const filtered = q ? window._manageExercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : window._manageExercises;
-  renderManageList(filtered);
-}
-
+function filterManageList(q) { if (!window._manageExercises) return; renderManageList(q ? window._manageExercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : window._manageExercises); }
 function renderManageList(exercises) {
   const el = document.getElementById('manage-items');
   if (!el) return;
   if (!exercises.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏋️</div><p>لا يوجد تمارين</p></div>'; return; }
   el.innerHTML = exercises.map(ex => {
     const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#1a1a24;border-radius:12px;" />` : `<span style="font-size:1.4rem;">${muscle.icon}</span>`;
-    return `<div class="exercise-item">
-      <div class="exercise-thumb">${thumb}</div>
-      <div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${muscle.color};">${ex.muscle}</div></div>
-      <div class="exercise-actions">
-        <button class="icon-btn" onclick="openEditModal('${ex.id}')">✏️</button>
-        <button class="icon-btn danger" onclick="deleteExercise('${ex.id}','${ex.name.replace(/'/g,"\\'")}')">🗑️</button>
-      </div>
-    </div>`;
+    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;" />` : `<span style="font-size:1.4rem;">${muscle.icon}</span>`;
+    return `<div class="exercise-item"><div class="exercise-thumb">${thumb}</div><div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${muscle.color};">${ex.muscle}</div></div><div class="exercise-actions"><button class="icon-btn" onclick="openEditModal('${ex.id}')">✏️</button><button class="icon-btn danger" onclick="deleteExercise('${ex.id}','${ex.name.replace(/'/g,"\\'")}')">🗑️</button></div></div>`;
   }).join('');
 }
 
-// ── PICKER MODAL ───────────────────────────────────────
+// ── PICKER ──
 async function showExercisePicker() {
   const modal = document.getElementById('modal-picker');
   modal.classList.add('open');
-  modal.onclick = e => { if (e.target === modal) closeModal('modal-picker'); };
+  modal.onclick = e => { if(e.target===modal) closeModal('modal-picker'); };
   document.getElementById('picker-search').value = '';
   pickerMuscleFilter = null;
-
-  const muscleEl = document.getElementById('picker-muscles');
-  muscleEl.innerHTML = `<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid var(--accent);background:var(--accent);color:#000;cursor:pointer;font-weight:700;" onclick="setPickerMuscle(null,this)">الكل</button>` +
+  document.getElementById('picker-muscles').innerHTML = `<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-weight:700;" onclick="setPickerMuscle(null,this)">الكل</button>` +
     MUSCLES.map(m => `<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid ${m.color};background:transparent;color:${m.color};cursor:pointer;" onclick="setPickerMuscle('${m.name}',this)">${m.icon} ${m.name}</button>`).join('');
-
   const { data: exercises } = await sbClient.from('exercises').select('*').order('name');
   pickerAllExercises = exercises || [];
   renderPickerList(pickerAllExercises);
 }
-
 function setPickerMuscle(muscle, btn) {
   pickerMuscleFilter = muscle;
-  document.querySelectorAll('#picker-muscles button').forEach(b => {
-    b.style.background = 'transparent'; b.style.color = b.style.borderColor||'var(--accent)'; b.style.fontWeight='400';
-  });
-  btn.style.background = btn.style.borderColor||'var(--accent)'; btn.style.color='#000'; btn.style.fontWeight='700';
-  const q = document.getElementById('picker-search').value;
-  onPickerSearch(q);
+  document.querySelectorAll('#picker-muscles button').forEach(b => { b.style.background='transparent'; b.style.color=b.style.borderColor||'var(--accent)'; b.style.fontWeight='400'; });
+  btn.style.background=btn.style.borderColor||'var(--accent)'; btn.style.color='#fff'; btn.style.fontWeight='700';
+  onPickerSearch(document.getElementById('picker-search').value);
 }
-
 function onPickerSearch(q) {
-  let filtered = pickerMuscleFilter ? pickerAllExercises.filter(e => e.muscle === pickerMuscleFilter) : pickerAllExercises;
+  let filtered = pickerMuscleFilter ? pickerAllExercises.filter(e => e.muscle===pickerMuscleFilter) : pickerAllExercises;
   if (q) filtered = filtered.filter(e => e.name.toLowerCase().includes(q.toLowerCase()));
   renderPickerList(filtered);
 }
-
 function renderPickerList(exercises) {
   document.getElementById('picker-list').innerHTML = exercises.map(ex => {
-    const m = MUSCLES.find(x => x.name === ex.muscle) || { icon: '💪', color: '#888' };
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#1a1a24;border-radius:10px;" />` : `<span>${m.icon}</span>`;
-    return `<div class="exercise-item" onclick="openLogScreen('${ex.id}')">
-      <div class="exercise-thumb">${thumb}</div>
-      <div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${m.color};">${ex.muscle}</div></div>
-      <div style="color:var(--accent);font-size:1.3rem;padding:0 6px;">+</div>
-    </div>`;
+    const m = MUSCLES.find(x => x.name===ex.muscle) || { icon:'💪', color:'#888' };
+    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:10px;" />` : `<span>${m.icon}</span>`;
+    return `<div class="exercise-item" onclick="openLogScreen('${ex.id}')"><div class="exercise-thumb">${thumb}</div><div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${m.color};">${ex.muscle}</div></div><div style="color:var(--accent-light);font-size:1.3rem;padding:0 6px;">+</div></div>`;
   }).join('') || '<div class="empty-state"><p>لا يوجد نتايج</p></div>';
 }
 
-// ── ADD/EDIT EXERCISE ──────────────────────────────────
-function populateMuscleSelect() {
-  document.getElementById('ex-muscle').innerHTML = MUSCLES.map(m => `<option value="${m.name}">${m.icon} ${m.name}</option>`).join('');
-}
-
+// ── ADD/EDIT EXERCISE ──
+function populateMuscleSelect() { document.getElementById('ex-muscle').innerHTML = MUSCLES.map(m => `<option value="${m.name}">${m.icon} ${m.name}</option>`).join(''); }
 function openAddModal() {
   populateMuscleSelect();
   document.getElementById('modal-exercise-title').textContent = 'إضافة تمرين';
-  document.getElementById('ex-id').value = '';
-  document.getElementById('ex-name').value = '';
-  document.getElementById('ex-current-img').value = '';
+  ['ex-id','ex-name','ex-current-img'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('img-preview').style.display = 'none';
   document.getElementById('ex-image').value = '';
   document.getElementById('modal-exercise').classList.add('open');
-  document.getElementById('modal-exercise').onclick = e => { if (e.target === document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
+  document.getElementById('modal-exercise').onclick = e => { if(e.target===document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
 }
-
 async function openEditModal(id) {
   populateMuscleSelect();
   const { data: ex } = await sbClient.from('exercises').select('*').eq('id', id).single();
@@ -1045,37 +970,19 @@ async function openEditModal(id) {
   if (ex.image_url) { document.getElementById('img-preview').src = ex.image_url; document.getElementById('img-preview').style.display = 'block'; }
   else { document.getElementById('img-preview').style.display = 'none'; }
   document.getElementById('modal-exercise').classList.add('open');
-  document.getElementById('modal-exercise').onclick = e => { if (e.target === document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
+  document.getElementById('modal-exercise').onclick = e => { if(e.target===document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
 }
-
-function previewImage(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => { const img = document.getElementById('img-preview'); img.src = e.target.result; img.style.display = 'block'; };
-  reader.readAsDataURL(file);
-}
-
+function previewImage(input) { const file=input.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{const img=document.getElementById('img-preview');img.src=e.target.result;img.style.display='block';}; r.readAsDataURL(file); }
 async function saveExercise() {
-  const id = document.getElementById('ex-id').value;
-  const name = document.getElementById('ex-name').value.trim();
-  const muscle = document.getElementById('ex-muscle').value;
-  const fileInput = document.getElementById('ex-image');
-  const currentImg = document.getElementById('ex-current-img').value;
+  const id=document.getElementById('ex-id').value, name=document.getElementById('ex-name').value.trim(), muscle=document.getElementById('ex-muscle').value;
+  const fileInput=document.getElementById('ex-image'), currentImg=document.getElementById('ex-current-img').value;
   if (!name) { showToast('ادخل اسم التمرين', 'error'); return; }
-
   let imageUrl = currentImg || null;
   if (fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const ext = file.name.split('.').pop();
-    const fileName = `${Date.now()}.${ext}`;
+    const file=fileInput.files[0], ext=file.name.split('.').pop(), fileName=`${Date.now()}.${ext}`;
     const { error: upErr } = await sbClient.storage.from('gym-images').upload(fileName, file, { upsert: true });
-    if (!upErr) {
-      const { data: urlData } = sbClient.storage.from('gym-images').getPublicUrl(fileName);
-      imageUrl = urlData.publicUrl;
-    }
+    if (!upErr) { const { data: urlData } = sbClient.storage.from('gym-images').getPublicUrl(fileName); imageUrl = urlData.publicUrl; }
   }
-
   if (id) {
     const { error } = await sbClient.from('exercises').update({ name, muscle, image_url: imageUrl }).eq('id', id);
     if (error) { showToast('❌ ' + error.message, 'error'); return; }
@@ -1085,30 +992,14 @@ async function saveExercise() {
     if (error) { showToast('❌ ' + error.message, 'error'); return; }
     showToast('✅ تم الإضافة', 'success');
   }
-  closeModal('modal-exercise');
-  loadManageContent();
+  closeModal('modal-exercise'); loadManageContent();
 }
+async function deleteExercise(id, name) { if(!confirm(`هتحذف "${name}"؟`)) return; await sbClient.from('exercises').delete().eq('id', id); showToast('تم الحذف','success'); loadManageContent(); }
 
-async function deleteExercise(id, name) {
-  if (!confirm(`هتحذف "${name}"؟`)) return;
-  await sbClient.from('exercises').delete().eq('id', id);
-  showToast('تم الحذف', 'success');
-  loadManageContent();
-}
-
-// ── UTILS ──────────────────────────────────────────────
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg, type='success') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type+' show'; setTimeout(()=>t.classList.remove('show'),2500); }
 
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast ' + type + ' show';
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ── START ──────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  initSupabase(SUPABASE_URL, SUPABASE_KEY);
-});
+window.addEventListener('DOMContentLoaded', () => { initSupabase(SUPABASE_URL, SUPABASE_KEY); });
 </script>
 </body>
 </html>
