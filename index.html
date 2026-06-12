@@ -212,6 +212,48 @@
   .toast.success { border-color:var(--accent); color:var(--accent-light); }
   .toast.error { border-color:var(--accent2); color:var(--accent2); }
 
+
+  /* LIGHT THEME */
+  body.light {
+    --bg: #f0f2f5; --surface: #ffffff; --surface2: #e8eaf0;
+    --accent: #2563eb; --accent-light: #1d4ed8; --accent2: #dc2626;
+    --green: #16a34a; --text: #1a1d23; --text-muted: #6b7280;
+    --border: #d1d5db;
+  }
+  body.light .app-header { background: rgba(240,242,245,0.96); }
+  body.light .bottom-nav { background: rgba(255,255,255,0.97); }
+  body.light .bw-strip { background: linear-gradient(135deg,#dbeafe,#eff6ff); border-color:#bfdbfe; }
+  body.light .bw-label { color:#1d4ed8; }
+  body.light .bw-value { color:#1a1d23; }
+  body.light .prev-record { background: linear-gradient(135deg,#dbeafe,#eff6ff); border-color:#bfdbfe; }
+  body.light .best-week-card { background:linear-gradient(135deg,#dbeafe,#eff6ff); border-color:#bfdbfe; }
+  body.light .best-week-card .bw-label { color:#1d4ed8; }
+  body.light .best-week-card .bw-val { color:#1a1d23; }
+  body.light .set-input { background:var(--surface2); }
+  body.light .form-input, body.light .form-select { background:var(--surface2); color:var(--text); }
+  body.light .modal { background:#ffffff; }
+  body.light .toast { background:#ffffff; }
+  body.light .pr-badge { background:rgba(37,99,235,0.1); color:#1d4ed8; border-color:rgba(37,99,235,0.3); }
+  body.light .history-set-chip { background:var(--surface2); }
+  body.light .cal-day.has-session { background:rgba(37,99,235,0.12); color:#1d4ed8; border-color:rgba(37,99,235,0.3); }
+  body.light .bw-bar { background:linear-gradient(180deg,#2563eb,#93c5fd); }
+  body.light .progress-bar { background:linear-gradient(180deg,#2563eb,#93c5fd); }
+  body.light .week-stat { background:#ffffff; }
+  body.light .manage-tab { background:#ffffff; }
+  body.light .manage-tab.active { background:var(--accent); color:#fff; }
+  body.light .icon-btn { background:var(--surface2); }
+  body.light .search-bar { background:#ffffff; }
+  body.light .exercise-thumb img { background:#f5f5f5; }
+
+  /* THEME TOGGLE BTN */
+  .theme-toggle { background:var(--surface); border:1px solid var(--border); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; transition:all 0.2s; }
+
+  /* SWIPE TO DELETE */
+  .swipeable { position:relative; overflow:hidden; border-radius:var(--radius); margin-bottom:8px; }
+  .swipe-delete-bg { position:absolute; top:0; right:0; bottom:0; width:80px; background:var(--accent2); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem; border-radius:var(--radius); z-index:0; }
+  .swipeable .history-item, .swipeable .bw-entry { position:relative; z-index:1; margin-bottom:0; border-radius:var(--radius); transition:transform 0.2s ease; touch-action:pan-y; }
+  .swipeable .history-item.swiped, .swipeable .bw-entry.swiped { transform:translateX(-80px); }
+
   .loader { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-muted); font-size:0.9rem; gap:10px; }
   .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg)} }
@@ -224,7 +266,10 @@
 <div id="app">
   <div class="app-header">
     <div class="header-title" id="header-title">🏋️ جيم تراكر</div>
-    <div><button class="header-back" id="back-btn" style="display:none;" onclick="goBack()">→ رجوع</button></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="تغيير الثيم">🌙</button>
+      <button class="header-back" id="back-btn" style="display:none;" onclick="goBack()">→ رجوع</button>
+    </div>
   </div>
   <div class="main">
 
@@ -709,11 +754,14 @@ async function openExerciseDetail(exerciseId) {
     if(prevMaxW!==null){const d=maxW-prevMaxW;cmp=d>0?`<span class="compare-up">↑ +${d}</span>`:d<0?`<span class="compare-down">↓ ${d}</span>`:`<span class="compare-same">→</span>`;}
     const isPR=maxW===pr&&pr>0;
     const chips=(s.sets||[]).map((x,i)=>`<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
-    return `<div class="history-item">
-      <div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div>
-      <div class="history-sets-grid">${chips}</div>
-      ${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">📝 ${s.notes}</div>`:''}
-      <button class="history-edit-btn" onclick="openEditSession('${s.id}')">✏️ تعديل الجلسة</button>
+    return `<div class="swipeable" data-delete-id="${s.id}" data-delete-type="session">
+      <div class="swipe-delete-bg">🗑️</div>
+      <div class="history-item">
+        <div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div>
+        <div class="history-sets-grid">${chips}</div>
+        ${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">📝 ${s.notes}</div>`:''}
+        <button class="history-edit-btn" onclick="openEditSession('${s.id}')">✏️ تعديل الجلسة</button>
+      </div>
     </div>`;
   }).join('')||'<div class="empty-state"><div class="empty-icon">📊</div><p>لا يوجد تاريخ بعد</p></div>';
 
@@ -728,6 +776,7 @@ async function openExerciseDetail(exerciseId) {
     ${chartHtml}
     <button class="quick-log-btn" onclick="openLogScreen('${ex.id}')">+ تسجيل جلسة</button>
     <div class="section-title">التاريخ</div>${historyHtml}`;
+  setTimeout(applySwipeToHistory, 50);
 }
 
 // ── HISTORY / CALENDAR ──
@@ -779,7 +828,7 @@ async function loadWeightScreen() {
   const chartEntries=[...list].reverse().slice(-14);
   const maxW=Math.max(...chartEntries.map(e=>e.weight)), minW=Math.min(...chartEntries.map(e=>e.weight)), range=maxW-minW||1;
   const chartHtml=chartEntries.map(e=>{const h=Math.max(20,Math.round(((e.weight-minW)/range)*80+20));const d=new Date(e.recorded_at).toLocaleDateString('ar-EG',{month:'numeric',day:'numeric'});return `<div class="bw-bar-wrap"><div class="bw-bar" style="height:${h}px;"></div><div class="bw-bar-label">${e.weight}</div><div class="bw-bar-label">${d}</div></div>`;}).join('');
-  const entriesHtml=list.map((e,idx)=>{const next=list[idx+1];let trend='';if(next){const diff=(e.weight-next.weight).toFixed(1);trend=diff>0?`<span class="bw-trend-up">↑ +${diff}</span>`:`<span class="bw-trend-down">↓ ${diff}</span>`;}const date=new Date(e.recorded_at).toLocaleDateString('ar-EG',{weekday:'short',year:'numeric',month:'short',day:'numeric'});return `<div class="bw-entry"><div><div class="bw-entry-weight">${e.weight} كج ${trend}</div><div class="bw-entry-date">${date}</div>${e.note?`<div style="font-size:0.75rem;color:var(--text-muted);">📝 ${e.note}</div>`:''}</div><button class="icon-btn danger" onclick="deleteWeight('${e.id}')">🗑️</button></div>`;}).join('');
+  const entriesHtml=list.map((e,idx)=>{const next=list[idx+1];let trend='';if(next){const diff=(e.weight-next.weight).toFixed(1);trend=diff>0?`<span class="bw-trend-up">↑ +${diff}</span>`:`<span class="bw-trend-down">↓ ${diff}</span>`;}const date=new Date(e.recorded_at).toLocaleDateString('ar-EG',{weekday:'short',year:'numeric',month:'short',day:'numeric'});return `<div class="swipeable" data-delete-id="${e.id}" data-delete-type="weight"><div class="swipe-delete-bg">🗑️</div><div class="bw-entry"><div><div class="bw-entry-weight">${e.weight} كج ${trend}</div><div class="bw-entry-date">${date}</div>${e.note?`<div style="font-size:0.75rem;color:var(--text-muted);">📝 ${e.note}</div>`:''}</div><button class="icon-btn danger" onclick="deleteWeight('${e.id}')">🗑️</button></div></div>`;}).join('');
   el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
     <div><div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">الوزن الحالي</div>
     <div style="font-size:2rem;font-weight:900;color:var(--accent-light);">${latest?latest.weight+' كج':'--'}</div>
@@ -788,7 +837,7 @@ async function loadWeightScreen() {
   </div>
   ${chartEntries.length>1?`<div class="bw-chart-area"><div class="section-title">آخر ${chartEntries.length} قياسات</div><div class="bw-chart">${chartHtml}</div></div>`:''}
   <div class="section-title">السجل</div>
-  ${entriesHtml||'<div class="empty-state"><div class="empty-icon">⚖️</div><p>لم تسجل وزنك بعد</p></div>'}`;
+  ${entriesHtml||'<div class="empty-state"><div class="empty-icon">⚖️</div><p>لم تسجل وزنك بعد</p></div>'}`;  setTimeout(applySwipeToHistory, 50);
 }
 function openAddWeightModal(){document.getElementById('bw-input').value='';document.getElementById('bw-date').value=new Date().toISOString().split('T')[0];document.getElementById('bw-note').value='';document.getElementById('modal-weight').classList.add('open');document.getElementById('modal-weight').onclick=e=>{if(e.target===document.getElementById('modal-weight'))closeModal('modal-weight');};}
 async function saveBodyWeight(){
@@ -903,7 +952,67 @@ async function deleteExercise(id,name){if(!confirm(`هتحذف "${name}"؟`))ret
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),2500);}
 
-window.addEventListener('DOMContentLoaded',()=>{initSupabase(SUPABASE_URL,SUPABASE_KEY);});
+
+// ── THEME ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-toggle').textContent = isLight ? '☀️' : '🌙';
+}
+function applyTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { document.body.classList.add('light'); document.getElementById('theme-toggle').textContent = '☀️'; }
+}
+
+// ── SWIPE TO DELETE ──
+function makeSwipeable(el, onDelete) {
+  let startX = 0, currentX = 0, isSwiping = false;
+  const inner = el.querySelector('.history-item, .bw-entry');
+  if (!inner) return;
+
+  el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isSwiping = true; }, { passive: true });
+  el.addEventListener('touchmove', e => {
+    if (!isSwiping) return;
+    currentX = e.touches[0].clientX - startX;
+    if (currentX < 0) {
+      // RTL: swipe left = delete (which is right in RTL = toward start)
+      inner.style.transform = `translateX(${Math.max(currentX, -80)}px)`;
+    }
+  }, { passive: true });
+  el.addEventListener('touchend', () => {
+    isSwiping = false;
+    if (currentX < -50) {
+      inner.classList.add('swiped');
+      // auto confirm after 600ms or tap delete bg
+      setTimeout(() => { if (inner.classList.contains('swiped')) onDelete(); }, 1500);
+    } else {
+      inner.style.transform = '';
+    }
+    currentX = 0;
+  });
+}
+
+function applySwipeToHistory() {
+  document.querySelectorAll('.swipeable').forEach(el => {
+    const deleteId = el.dataset.deleteId;
+    const deleteType = el.dataset.deleteType;
+    if (!deleteId || el.dataset.swipeReady) return;
+    el.dataset.swipeReady = '1';
+    makeSwipeable(el, async () => {
+      if (deleteType === 'session') {
+        await sbClient.from('sessions').delete().eq('id', deleteId);
+        showToast('تم الحذف', 'success');
+        openExerciseDetail(currentDetailExerciseId);
+      } else if (deleteType === 'weight') {
+        await sbClient.from('body_weight').delete().eq('id', deleteId);
+        showToast('تم الحذف', 'success');
+        loadWeightScreen();
+      }
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded',()=>{applyTheme();initSupabase(SUPABASE_URL,SUPABASE_KEY);});
 </script>
 </body>
 </html>
