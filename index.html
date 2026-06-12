@@ -875,7 +875,7 @@ function openAddModal(){
 async function openEditModal(id){
   populateMuscleSelect();const {data:ex}=await sbClient.from('exercises').select('*').eq('id',id).single();
   document.getElementById('modal-exercise-title').textContent='تعديل تمرين';
-  d  document.getElementById('ex-id').value=ex.id;document.getElementById('ex-name').value=ex.name;
+  document.getElementById('ex-id').value=ex.id;document.getElementById('ex-name').value=ex.name;
   document.getElementById('ex-muscle').value=ex.muscle;document.getElementById('ex-current-img').value=ex.image_url||'';
   document.getElementById('ex-image').value='';
   if(ex.image_url){document.getElementById('img-preview').src=ex.image_url;document.getElementById('img-preview').style.display='block';}
