@@ -8,330 +8,216 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --bg: #1e2128;
-    --surface: #272b33;
-    --surface2: #2f343e;
-    --accent: #4f8ef7;
-    --accent-light: #7aabff;
-    --accent2: #ff5c6c;
-    --green: #34c78a;
-    --text: #eef0f4;
-    --text-muted: #8b93a4;
-    --border: #363c48;
-    --radius: 16px;
+    --bg: #1e2128; --surface: #272b33; --surface2: #2f343e;
+    --accent: #4f8ef7; --accent-light: #7aabff; --accent2: #ff5c6c;
+    --green: #34c78a; --text: #eef0f4; --text-muted: #8b93a4;
+    --border: #363c48; --radius: 16px;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 
-  .app-header {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(30,33,40,0.96); backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .header-title { font-size: 1.15rem; font-weight: 700; }
-  .header-back {
-    background: var(--surface); border: 1px solid var(--border); color: var(--text);
-    border-radius: 10px; padding: 8px 14px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; cursor: pointer;
-  }
+  .app-header { position:sticky; top:0; z-index:100; background:rgba(30,33,40,0.96); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .header-title { font-size:1.15rem; font-weight:700; }
+  .header-back { background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:10px; padding:8px 14px; font-family:'Cairo',sans-serif; font-size:0.85rem; cursor:pointer; }
 
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(39,43,51,0.97); backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border); display: flex; z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .nav-item {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    padding: 10px 0 8px; cursor: pointer; color: var(--text-muted);
-    font-size: 0.7rem; gap: 4px; border: none; background: none;
-    font-family: 'Cairo', sans-serif; transition: all 0.2s;
-  }
-  .nav-item .nav-icon { font-size: 1.4rem; }
-  .nav-item.active { color: var(--accent); }
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(39,43,51,0.97); backdrop-filter:blur(12px); border-top:1px solid var(--border); display:flex; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
+  .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; cursor:pointer; color:var(--text-muted); font-size:0.7rem; gap:4px; border:none; background:none; font-family:'Cairo',sans-serif; transition:all 0.2s; }
+  .nav-item .nav-icon { font-size:1.3rem; }
+  .nav-item.active { color:var(--accent); }
 
-  .main { padding: 16px 16px 90px; }
-  .screen { display: none; }
-  .screen.active { display: block; }
+  .main { padding:16px 16px 90px; }
+  .screen { display:none; } .screen.active { display:block; }
 
-  /* BUTTONS */
-  .btn-primary {
-    width: 100%; background: var(--accent); color: #fff; border: none;
-    border-radius: 12px; padding: 14px; font-family: 'Cairo', sans-serif;
-    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 4px 16px rgba(79,142,247,0.3);
-  }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-secondary {
-    flex: 1; background: transparent; border: 1px solid var(--border); color: var(--text);
-    border-radius: 12px; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; cursor: pointer;
-  }
-  .btn-save {
-    flex: 2; background: var(--accent); border: none; color: #fff;
-    border-radius: 12px; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer;
-  }
-  .quick-log-btn {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; background: var(--accent); color: #fff; border: none;
-    border-radius: var(--radius); padding: 16px; font-family: 'Cairo', sans-serif;
-    font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 24px; transition: all 0.2s;
-    box-shadow: 0 4px 20px rgba(79,142,247,0.25);
-  }
-  .quick-log-btn:active { transform: scale(0.98); }
+  .btn-primary { width:100%; background:var(--accent); color:#fff; border:none; border-radius:12px; padding:14px; font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 16px rgba(79,142,247,0.3); }
+  .btn-primary:active { transform:scale(0.98); }
+  .btn-secondary { flex:1; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:12px; padding:13px; font-family:'Cairo',sans-serif; font-size:0.9rem; cursor:pointer; }
+  .btn-save { flex:2; background:var(--accent); border:none; color:#fff; border-radius:12px; padding:13px; font-family:'Cairo',sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer; }
+  .quick-log-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:var(--accent); color:#fff; border:none; border-radius:var(--radius); padding:16px; font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; margin-bottom:24px; transition:all 0.2s; box-shadow:0 4px 20px rgba(79,142,247,0.25); }
+  .quick-log-btn:active { transform:scale(0.98); }
+  .section-title { font-size:0.75rem; font-weight:700; color:var(--text-muted); letter-spacing:0.1em; margin-bottom:12px; text-transform:uppercase; }
 
-  .section-title {
-    font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
-    letter-spacing: 0.1em; margin-bottom: 12px; text-transform: uppercase;
-  }
-
-  /* SEARCH */
-  .search-bar {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
-  }
-  .search-bar input { flex: 1; background: none; border: none; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 0.9rem; outline: none; }
-  .search-bar input::placeholder { color: var(--text-muted); }
-  .search-icon { color: var(--text-muted); font-size: 1rem; }
+  .search-bar { display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 14px; margin-bottom:14px; }
+  .search-bar input { flex:1; background:none; border:none; color:var(--text); font-family:'Cairo',sans-serif; font-size:0.9rem; outline:none; }
+  .search-bar input::placeholder { color:var(--text-muted); }
+  .search-icon { color:var(--text-muted); font-size:1rem; }
 
   /* HOME */
-  .greeting { margin-bottom: 20px; }
-  .greeting h1 { font-size: 1.6rem; font-weight: 900; line-height: 1.2; }
-  .greeting h1 span { color: var(--accent-light); }
-  .greeting p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+  .greeting { margin-bottom:20px; }
+  .greeting h1 { font-size:1.6rem; font-weight:900; line-height:1.2; }
+  .greeting h1 span { color:var(--accent-light); }
+  .greeting p { color:var(--text-muted); font-size:0.85rem; margin-top:4px; }
+
+  /* WEEKLY STATS */
+  .week-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
+  .week-stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px; text-align:center; }
+  .week-stat .ws-val { font-size:1.3rem; font-weight:900; color:var(--accent-light); }
+  .week-stat .ws-lbl { font-size:0.68rem; color:var(--text-muted); margin-top:2px; }
+  .best-week-card { background:linear-gradient(135deg,#1e3a5f,#1a2d4a); border:1px solid #2a4a7f; border-radius:var(--radius); padding:14px 16px; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+  .best-week-card .bw-icon { font-size:1.8rem; }
+  .best-week-card .bw-label { font-size:0.75rem; color:#7aabff; font-weight:700; }
+  .best-week-card .bw-val { font-size:1rem; font-weight:700; color:#fff; }
 
   /* BODY WEIGHT STRIP */
-  .bw-strip {
-    background: linear-gradient(135deg, #2f3a50, #243048);
-    border: 1px solid #3a4a66;
-    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .bw-info { flex: 1; }
-  .bw-label { font-size: 0.75rem; color: #7aabff; font-weight: 700; margin-bottom: 3px; }
-  .bw-value { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1; }
-  .bw-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-  .bw-btn {
-    background: rgba(79,142,247,0.2); border: 1px solid rgba(79,142,247,0.4);
-    color: var(--accent-light); border-radius: 10px; padding: 8px 14px;
-    font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer;
-  }
+  .bw-strip { background:linear-gradient(135deg,#2f3a50,#243048); border:1px solid #3a4a66; border-radius:var(--radius); padding:14px 16px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .bw-info { flex:1; }
+  .bw-label { font-size:0.75rem; color:#7aabff; font-weight:700; margin-bottom:3px; }
+  .bw-value { font-size:1.6rem; font-weight:900; color:#fff; line-height:1; }
+  .bw-sub { font-size:0.72rem; color:var(--text-muted); margin-top:2px; }
+  .bw-btn { background:rgba(79,142,247,0.2); border:1px solid rgba(79,142,247,0.4); color:var(--accent-light); border-radius:10px; padding:8px 14px; font-family:'Cairo',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; }
 
   /* MUSCLE GRID */
-  .muscle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
-  .muscle-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-  }
-  .muscle-card::before {
-    content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
-    border-radius: 0 var(--radius) var(--radius) 0;
-  }
-  .muscle-card:active { transform: scale(0.97); background: var(--surface2); }
-  .muscle-card .muscle-icon { font-size: 1.8rem; margin-bottom: 6px; }
-  .muscle-card .muscle-name { font-size: 0.9rem; font-weight: 700; }
-  .muscle-card .muscle-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-  .muscle-card[data-muscle="أرجل"]::before { background: #ff6b35; }
-  .muscle-card[data-muscle="صدر"]::before { background: #e84393; }
-  .muscle-card[data-muscle="ظهر"]::before { background: #00d4aa; }
-  .muscle-card[data-muscle="كتف"]::before { background: #7c4dff; }
-  .muscle-card[data-muscle="بايسبس / ترايسبس"]::before { background: #ffd700; }
+  .muscle-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:28px; }
+  .muscle-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+  .muscle-card::before { content:''; position:absolute; top:0; right:0; width:4px; height:100%; border-radius:0 var(--radius) var(--radius) 0; }
+  .muscle-card:active { transform:scale(0.97); background:var(--surface2); }
+  .muscle-card .muscle-icon { font-size:1.8rem; margin-bottom:6px; }
+  .muscle-card .muscle-name { font-size:0.9rem; font-weight:700; }
+  .muscle-card .muscle-count { font-size:0.75rem; color:var(--text-muted); margin-top:2px; }
+  .muscle-card[data-muscle="أرجل"]::before { background:#ff6b35; }
+  .muscle-card[data-muscle="صدر"]::before { background:#e84393; }
+  .muscle-card[data-muscle="ظهر"]::before { background:#00d4aa; }
+  .muscle-card[data-muscle="كتف"]::before { background:#7c4dff; }
+  .muscle-card[data-muscle="بايسبس / ترايسبس"]::before { background:#ffd700; }
 
-  /* RECENT SESSIONS - with quick log btn */
-  .session-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 12px; transition: all 0.15s;
-  }
-  .session-card:active { background: var(--surface2); }
-  .session-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-  .session-info { flex: 1; min-width: 0; cursor: pointer; }
-  .session-name { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .session-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-  .session-weight { font-size: 0.95rem; font-weight: 700; color: var(--accent-light); white-space: nowrap; }
-  .session-quick-log {
-    background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3);
-    color: var(--accent-light); border-radius: 8px; width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    font-size: 1.1rem; flex-shrink: 0; transition: all 0.15s;
-  }
-  .session-quick-log:active { background: rgba(79,142,247,0.3); }
+  /* SESSION CARD */
+  .session-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:12px; transition:all 0.15s; }
+  .session-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+  .session-info { flex:1; min-width:0; cursor:pointer; }
+  .session-name { font-size:0.88rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .session-meta { font-size:0.72rem; color:var(--text-muted); margin-top:2px; }
+  .session-quick-log { background:rgba(79,142,247,0.15); border:1px solid rgba(79,142,247,0.3); color:var(--accent-light); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; flex-shrink:0; }
 
   /* EXERCISE ITEM */
-  .exercise-item {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.15s;
-  }
-  .exercise-item:active { background: var(--surface2); }
-  .exercise-thumb {
-    width: 50px; height: 50px; border-radius: 12px; background: var(--surface2); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden;
-  }
-  .exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
-  .exercise-info { flex: 1; min-width: 0; }
-  .exercise-name { font-size: 0.9rem; font-weight: 600; }
-  .exercise-last { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
-  .exercise-actions { display: flex; gap: 6px; }
-  .icon-btn {
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-    border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center;
-    justify-content: center; cursor: pointer; font-size: 0.85rem; transition: all 0.15s;
-  }
-  .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
-  .icon-btn.danger:hover { color: var(--accent2); border-color: var(--accent2); }
+  .exercise-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.15s; }
+  .exercise-item:active { background:var(--surface2); }
+  .exercise-thumb { width:50px; height:50px; border-radius:12px; background:var(--surface2); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; overflow:hidden; }
+  .exercise-thumb img { width:100%; height:100%; object-fit:contain; background:#252930; }
+  .exercise-info { flex:1; min-width:0; }
+  .exercise-name { font-size:0.9rem; font-weight:600; }
+  .exercise-last { font-size:0.75rem; color:var(--text-muted); margin-top:3px; }
+  .exercise-actions { display:flex; gap:6px; }
+  .icon-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text-muted); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.85rem; transition:all 0.15s; }
+  .icon-btn:hover { color:var(--accent); border-color:var(--accent); }
+  .icon-btn.danger:hover { color:var(--accent2); border-color:var(--accent2); }
 
-  /* BADGES */
-  .pr-badge {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: rgba(79,142,247,0.15); color: var(--accent-light);
-    border: 1px solid rgba(79,142,247,0.3); border-radius: 6px; padding: 2px 6px;
-    font-size: 0.7rem; font-weight: 700;
-  }
-  .compare-up { color: var(--green); font-weight: 700; font-size: 0.8rem; }
-  .compare-down { color: var(--accent2); font-weight: 700; font-size: 0.8rem; }
-  .compare-same { color: var(--text-muted); font-size: 0.8rem; }
+  .pr-badge { display:inline-flex; align-items:center; gap:3px; background:rgba(79,142,247,0.15); color:var(--accent-light); border:1px solid rgba(79,142,247,0.3); border-radius:6px; padding:2px 6px; font-size:0.7rem; font-weight:700; }
+  .compare-up { color:var(--green); font-weight:700; font-size:0.8rem; }
+  .compare-down { color:var(--accent2); font-weight:700; font-size:0.8rem; }
+  .compare-same { color:var(--text-muted); font-size:0.8rem; }
 
   /* LOG */
-  .log-header {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .log-exercise-thumb {
-    width: 64px; height: 64px; border-radius: 12px; background: var(--surface2);
-    display: flex; align-items: center; justify-content: center; font-size: 1.8rem; overflow: hidden; flex-shrink: 0;
-  }
-  .log-exercise-thumb img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
-  .prev-record {
-    background: linear-gradient(135deg, #2a3245, #243040);
-    border: 1px solid #3a4a66; border-radius: 12px; padding: 12px 16px;
-    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
-  }
-  .prev-record .label { font-size: 0.78rem; color: var(--text-muted); }
-  .prev-record .value { font-size: 0.9rem; font-weight: 700; color: var(--accent-light); }
+  .log-header { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .log-exercise-thumb { width:64px; height:64px; border-radius:12px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:1.8rem; overflow:hidden; flex-shrink:0; }
+  .log-exercise-thumb img { width:100%; height:100%; object-fit:contain; background:#252930; }
+  .prev-record { background:linear-gradient(135deg,#2a3245,#243040); border:1px solid #3a4a66; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .prev-record .label { font-size:0.78rem; color:var(--text-muted); }
+  .prev-record .value { font-size:0.9rem; font-weight:700; color:var(--accent-light); }
 
-  .sets-container { margin-bottom: 20px; }
-  .set-row { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
-  .set-num { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-align: center; }
-  .set-input {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 10px; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 600; text-align: center; width: 100%;
-  }
-  .set-input:focus { outline: none; border-color: var(--accent); background: var(--surface2); }
-  .set-input::placeholder { color: var(--text-muted); font-weight: 400; }
-  .set-label-row { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; margin-bottom: 6px; }
-  .set-label { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
-  .add-set-btn {
-    width: 100%; background: transparent; border: 1px dashed var(--border);
-    border-radius: 10px; padding: 12px; color: var(--text-muted);
-    font-family: 'Cairo', sans-serif; font-size: 0.85rem; cursor: pointer; margin-bottom: 16px; transition: all 0.2s;
-  }
-  .add-set-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .notes-input {
-    width: 100%; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 14px; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 0.9rem; margin-bottom: 16px; resize: none; height: 70px;
-  }
-  .notes-input:focus { outline: none; border-color: var(--accent); }
+  .sets-container { margin-bottom:20px; }
+  .set-row { display:grid; grid-template-columns:28px 1fr 1fr auto; gap:8px; align-items:center; margin-bottom:8px; }
+  .set-num { font-size:0.8rem; color:var(--text-muted); font-weight:700; text-align:center; }
+  .set-input { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 10px; color:var(--text); font-family:'Cairo',sans-serif; font-size:1rem; font-weight:600; text-align:center; width:100%; }
+  .set-input:focus { outline:none; border-color:var(--accent); background:var(--surface2); }
+  .set-input::placeholder { color:var(--text-muted); font-weight:400; }
+  .set-label-row { display:grid; grid-template-columns:28px 1fr 1fr auto; gap:8px; margin-bottom:6px; }
+  .set-label { font-size:0.72rem; color:var(--text-muted); text-align:center; }
+  .add-set-btn { width:100%; background:transparent; border:1px dashed var(--border); border-radius:10px; padding:12px; color:var(--text-muted); font-family:'Cairo',sans-serif; font-size:0.85rem; cursor:pointer; margin-bottom:16px; transition:all 0.2s; }
+  .add-set-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .notes-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-family:'Cairo',sans-serif; font-size:0.9rem; margin-bottom:16px; resize:none; height:70px; }
+  .notes-input:focus { outline:none; border-color:var(--accent); }
+
+  /* WEIGHT PROGRESS CHART */
+  .progress-chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
+  .progress-chart { position:relative; height:80px; display:flex; align-items:flex-end; gap:4px; margin-top:8px; }
+  .progress-bar-wrap { display:flex; flex-direction:column; align-items:center; gap:3px; flex:1; }
+  .progress-bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(180deg,var(--accent),#2a4a80); min-height:4px; transition:height 0.4s; }
+  .progress-bar-val { font-size:0.58rem; color:var(--text-muted); white-space:nowrap; }
 
   /* HISTORY */
-  .history-date-group { margin-bottom: 20px; }
-  .history-date { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; padding-right: 4px; }
-  .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; }
-  .history-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .history-item-name { font-size: 0.88rem; font-weight: 600; }
-  .history-item-muscle { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
-  .history-sets-grid { display: flex; gap: 6px; flex-wrap: wrap; }
-  .history-set-chip { background: var(--surface2); border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; color: var(--text-muted); }
-  .history-set-chip span { color: var(--text); font-weight: 600; }
+  .history-date-group { margin-bottom:20px; }
+  .history-date { font-size:0.75rem; color:var(--text-muted); font-weight:700; margin-bottom:8px; padding-right:4px; }
+  .history-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:6px; }
+  .history-item-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .history-item-name { font-size:0.88rem; font-weight:600; }
+  .history-item-muscle { font-size:0.72rem; padding:2px 8px; border-radius:20px; font-weight:600; }
+  .history-sets-grid { display:flex; gap:6px; flex-wrap:wrap; }
+  .history-set-chip { background:var(--surface2); border-radius:8px; padding:4px 8px; font-size:0.75rem; color:var(--text-muted); }
+  .history-set-chip span { color:var(--text); font-weight:600; }
+  /* edit session btn */
+  .history-edit-btn { background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.25); color:var(--accent-light); border-radius:8px; padding:3px 8px; font-family:'Cairo',sans-serif; font-size:0.72rem; cursor:pointer; margin-top:8px; }
 
   /* CALENDAR */
-  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .calendar-month { font-size: 1rem; font-weight: 700; }
-  .cal-nav { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
-  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
-  .cal-day-name { font-size: 0.65rem; color: var(--text-muted); text-align: center; padding: 4px 0; font-weight: 700; }
-  .cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-muted); cursor: default; }
-  .cal-day.has-session { background: rgba(79,142,247,0.18); color: var(--accent-light); font-weight: 700; border: 1px solid rgba(79,142,247,0.35); cursor: pointer; }
-  .cal-day.today { border: 1px solid var(--accent); color: var(--accent-light); }
-  .cal-day.today.has-session { background: rgba(79,142,247,0.28); }
-  .cal-day.empty { opacity: 0; pointer-events: none; }
-  .cal-stats { display: flex; gap: 10px; margin-bottom: 20px; }
-  .cal-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
-  .cal-stat .val { font-size: 1.4rem; font-weight: 700; color: var(--accent-light); }
-  .cal-stat .lbl { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+  .calendar-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .calendar-month { font-size:1rem; font-weight:700; }
+  .cal-nav { background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; }
+  .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:20px; }
+  .cal-day-name { font-size:0.65rem; color:var(--text-muted); text-align:center; padding:4px 0; font-weight:700; }
+  .cal-day { aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.75rem; color:var(--text-muted); cursor:default; }
+  .cal-day.has-session { background:rgba(79,142,247,0.18); color:var(--accent-light); font-weight:700; border:1px solid rgba(79,142,247,0.35); cursor:pointer; }
+  .cal-day.today { border:1px solid var(--accent); color:var(--accent-light); }
+  .cal-day.today.has-session { background:rgba(79,142,247,0.28); }
+  .cal-day.empty { opacity:0; pointer-events:none; }
+  .cal-stats { display:flex; gap:10px; margin-bottom:20px; }
+  .cal-stat { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
+  .cal-stat .val { font-size:1.4rem; font-weight:700; color:var(--accent-light); }
+  .cal-stat .lbl { font-size:0.7rem; color:var(--text-muted); margin-top:2px; }
 
   /* BODY WEIGHT SCREEN */
-  .bw-chart-area {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 16px; overflow-x: auto;
-  }
-  .bw-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; min-width: 100%; }
-  .bw-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; min-width: 30px; }
-  .bw-bar { width: 100%; background: linear-gradient(180deg, var(--accent), #2a4a80); border-radius: 6px 6px 0 0; transition: height 0.4s ease; }
-  .bw-bar-label { font-size: 0.6rem; color: var(--text-muted); white-space: nowrap; }
-  .bw-entry { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-  .bw-entry-weight { font-size: 1.1rem; font-weight: 700; color: var(--accent-light); }
-  .bw-entry-date { font-size: 0.75rem; color: var(--text-muted); }
-  .bw-entry-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-  .bw-trend-up { color: var(--accent2); font-size: 0.8rem; font-weight: 700; }
-  .bw-trend-down { color: var(--green); font-size: 0.8rem; font-weight: 700; }
+  .bw-chart-area { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; overflow-x:auto; }
+  .bw-chart { display:flex; align-items:flex-end; gap:6px; height:100px; min-width:100%; }
+  .bw-bar-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:30px; }
+  .bw-bar { width:100%; background:linear-gradient(180deg,var(--accent),#2a4a80); border-radius:6px 6px 0 0; }
+  .bw-bar-label { font-size:0.6rem; color:var(--text-muted); white-space:nowrap; }
+  .bw-entry { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+  .bw-entry-weight { font-size:1.1rem; font-weight:700; color:var(--accent-light); }
+  .bw-entry-date { font-size:0.75rem; color:var(--text-muted); }
+  .bw-trend-up { color:var(--accent2); font-size:0.8rem; font-weight:700; }
+  .bw-trend-down { color:var(--green); font-size:0.8rem; font-weight:700; }
 
   /* MANAGE */
-  .manage-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-  .manage-tab {
-    flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
-    border-radius: 10px; padding: 10px; font-family: 'Cairo', sans-serif; font-size: 0.85rem;
-    cursor: pointer; transition: all 0.2s; text-align: center;
-  }
-  .manage-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+  .manage-tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .manage-tab { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text-muted); border-radius:10px; padding:10px; font-family:'Cairo',sans-serif; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-align:center; }
+  .manage-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700; }
 
   /* DETAIL */
-  .exercise-detail-img {
-    width: 100%; height: 220px; border-radius: var(--radius); margin-bottom: 16px;
-    background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 4rem; overflow: hidden;
-  }
-  .exercise-detail-img img { width: 100%; height: 100%; object-fit: contain; background: #252930; }
-  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
-  .stat-box .stat-val { font-size: 1.3rem; font-weight: 700; color: var(--accent-light); }
-  .stat-box .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+  .exercise-detail-img { width:100%; height:220px; border-radius:var(--radius); margin-bottom:16px; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:4rem; overflow:hidden; }
+  .exercise-detail-img img { width:100%; height:100%; object-fit:contain; background:#252930; }
+  .stats-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+  .stat-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
+  .stat-box .stat-val { font-size:1.3rem; font-weight:700; color:var(--accent-light); }
+  .stat-box .stat-label { font-size:0.7rem; color:var(--text-muted); margin-top:2px; }
 
   /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 500; display: none; align-items: flex-end; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: 24px 20px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
-  .modal-drag { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; display: block; }
-  .form-input, .form-select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 0.9rem; }
-  .form-input:focus, .form-select:focus { outline: none; border-color: var(--accent); }
-  .form-select option { background: var(--surface); }
-  .image-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-  .image-upload-area:hover { border-color: var(--accent); }
-  .image-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-  .preview-img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-top: 10px; background: var(--bg); }
-  .upload-icon { font-size: 2rem; margin-bottom: 6px; }
-  .upload-text { font-size: 0.82rem; color: var(--text-muted); }
-  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:500; display:none; align-items:flex-end; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:24px 24px 0 0; padding:24px 20px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; animation:slideUp 0.3s ease; }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-title { font-size:1.1rem; font-weight:700; margin-bottom:20px; }
+  .modal-drag { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+  .form-group { margin-bottom:14px; }
+  .form-label { font-size:0.82rem; color:var(--text-muted); margin-bottom:6px; display:block; }
+  .form-input,.form-select { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-family:'Cairo',sans-serif; font-size:0.9rem; }
+  .form-input:focus,.form-select:focus { outline:none; border-color:var(--accent); }
+  .form-select option { background:var(--surface); }
+  .image-upload-area { border:2px dashed var(--border); border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+  .image-upload-area:hover { border-color:var(--accent); }
+  .image-upload-area input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .preview-img { width:100%; height:140px; object-fit:contain; border-radius:8px; margin-top:10px; background:var(--bg); }
+  .upload-icon { font-size:2rem; margin-bottom:6px; }
+  .upload-text { font-size:0.82rem; color:var(--text-muted); }
+  .modal-actions { display:flex; gap:10px; margin-top:20px; }
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 20px; font-size: 0.85rem; z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap; }
-  .toast.show { opacity: 1; }
-  .toast.success { border-color: var(--accent); color: var(--accent-light); }
-  .toast.error { border-color: var(--accent2); color: var(--accent2); }
+  .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:10px 20px; font-size:0.85rem; z-index:999; opacity:0; transition:all 0.3s; white-space:nowrap; }
+  .toast.show { opacity:1; }
+  .toast.success { border-color:var(--accent); color:var(--accent-light); }
+  .toast.error { border-color:var(--accent2); color:var(--accent2); }
 
-  .loader { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; gap: 10px; }
-  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 10px; }
-  .empty-state p { font-size: 0.88rem; }
+  .loader { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-muted); font-size:0.9rem; gap:10px; }
+  .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); }
+  .empty-state .empty-icon { font-size:3rem; margin-bottom:10px; }
+  .empty-state p { font-size:0.88rem; }
 </style>
 </head>
 <body>
@@ -344,24 +230,24 @@
 
     <!-- HOME -->
     <div class="screen active" id="screen-home">
-      <div class="greeting">
-        <h1>يلا <span>نتدرب 💪</span></h1>
-        <p id="today-date"></p>
+      <div class="greeting"><h1>يلا <span>نتدرب 💪</span></h1><p id="today-date"></p></div>
+      <!-- Weekly Stats -->
+      <div class="week-stats" id="week-stats">
+        <div class="week-stat"><div class="ws-val" id="ws-days">-</div><div class="ws-lbl">أيام هذا الأسبوع</div></div>
+        <div class="week-stat"><div class="ws-val" id="ws-sessions">-</div><div class="ws-lbl">تمارين مسجلة</div></div>
+        <div class="week-stat"><div class="ws-val" id="ws-kg">-</div><div class="ws-lbl">كج إجمالي</div></div>
       </div>
-
-      <!-- BODY WEIGHT STRIP -->
-      <div class="bw-strip" id="bw-strip">
-        <div class="bw-info">
-          <div class="bw-label">⚖️ وزن الجسم</div>
-          <div class="bw-value" id="bw-current">-- كج</div>
-          <div class="bw-sub" id="bw-change"></div>
-        </div>
+      <!-- Best Week -->
+      <div class="best-week-card" id="best-week-card" style="display:none;">
+        <div class="bw-icon">🏆</div>
+        <div><div class="bw-label">أفضل أسبوع لك</div><div class="bw-val" id="best-week-val"></div></div>
+      </div>
+      <!-- Body Weight -->
+      <div class="bw-strip">
+        <div class="bw-info"><div class="bw-label">⚖️ وزن الجسم</div><div class="bw-value" id="bw-current">-- كج</div><div class="bw-sub" id="bw-change"></div></div>
         <button class="bw-btn" onclick="navigate('weight')">تسجيل</button>
       </div>
-
-      <button class="quick-log-btn" onclick="showExercisePicker()">
-        <span style="font-size:1.3rem">+</span><span>تسجيل تمرين</span>
-      </button>
+      <button class="quick-log-btn" onclick="showExercisePicker()"><span style="font-size:1.3rem">+</span><span>تسجيل تمرين</span></button>
       <div class="section-title">عضلات</div>
       <div class="muscle-grid" id="muscle-grid"><div class="loader"><div class="spinner"></div></div></div>
       <div class="section-title">آخر جلسات</div>
@@ -374,13 +260,11 @@
     <!-- LOG -->
     <div class="screen" id="screen-log"><div id="log-content"></div></div>
 
-    <!-- HISTORY / CALENDAR -->
+    <!-- HISTORY -->
     <div class="screen" id="screen-history"><div id="history-content"></div></div>
 
-    <!-- BODY WEIGHT SCREEN -->
-    <div class="screen" id="screen-weight">
-      <div id="weight-content"></div>
-    </div>
+    <!-- WEIGHT -->
+    <div class="screen" id="screen-weight"><div id="weight-content"></div></div>
 
     <!-- MANAGE -->
     <div class="screen" id="screen-manage">
@@ -439,7 +323,24 @@
   </div>
 </div>
 
-<!-- ADD WEIGHT MODAL -->
+<!-- EDIT SESSION MODAL -->
+<div class="modal-overlay" id="modal-edit-session">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="edit-session-title">تعديل الجلسة</div>
+    <div class="set-label-row"><div></div><div class="set-label">الوزن (كج)</div><div class="set-label">التكرارات</div><div></div></div>
+    <div id="edit-sets-rows"></div>
+    <button class="add-set-btn" onclick="addEditSetRow()">+ إضافة مجموعة</button>
+    <div class="form-group"><label class="form-label">ملاحظات</label><textarea class="notes-input" id="edit-session-notes" style="margin-bottom:0;"></textarea></div>
+    <input type="hidden" id="edit-session-id" />
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-edit-session')">إلغاء</button>
+      <button class="btn-save" onclick="saveEditSession()">حفظ التعديل</button>
+    </div>
+  </div>
+</div>
+
+<!-- WEIGHT MODAL -->
 <div class="modal-overlay" id="modal-weight">
   <div class="modal">
     <div class="modal-drag"></div>
@@ -459,72 +360,55 @@
 <script>
 const SUPABASE_URL = 'https://iyhwbzsrrgijfjjbqkyq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5aHdienNycmdpamZqamJxa3lxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc1MzQsImV4cCI6MjA5NjQ0MzUzNH0.A7WoNT4ZWhJn1e3kHrRiQHUUoKfto4q4EkJgq34Hlqw';
-
 let sbClient = null;
 
 const MUSCLES = [
-  { name: 'أرجل', icon: '🦵', color: '#ff6b35' },
-  { name: 'صدر', icon: '💪', color: '#e84393' },
-  { name: 'ظهر', icon: '🔙', color: '#00d4aa' },
-  { name: 'كتف', icon: '🏋️', color: '#7c4dff' },
-  { name: 'بايسبس / ترايسبس', icon: '💥', color: '#ffd700' },
+  { name:'أرجل', icon:'🦵', color:'#ff6b35' }, { name:'صدر', icon:'💪', color:'#e84393' },
+  { name:'ظهر', icon:'🔙', color:'#00d4aa' }, { name:'كتف', icon:'🏋️', color:'#7c4dff' },
+  { name:'بايسبس / ترايسبس', icon:'💥', color:'#ffd700' },
 ];
 
 const DEFAULT_EXERCISES = [
-  { name: 'leg extension', muscle: 'أرجل' }, { name: 'leg curl', muscle: 'أرجل' },
-  { name: 'lunges', muscle: 'أرجل' }, { name: 'dumbell squat', muscle: 'أرجل' },
-  { name: 'smith squat', muscle: 'أرجل' }, { name: 'leg press', muscle: 'أرجل' },
-  { name: 'الضامه', muscle: 'أرجل' }, { name: 'السمانه جهاز', muscle: 'أرجل' },
-  { name: 'shoulder press', muscle: 'كتف' }, { name: 'ترابيس', muscle: 'كتف' },
-  { name: 'رفرفه جانبي بالدمبل', muscle: 'كتف' }, { name: 'رفرفه جانبي بالكيبل', muscle: 'كتف' },
-  { name: 'تجميع كتف', muscle: 'كتف' }, { name: 'رفرفه امامي جلوس', muscle: 'كتف' },
-  { name: 'رفرفه امامي', muscle: 'كتف' }, { name: 'كتف خلفي جهاز', muscle: 'كتف' },
-  { name: 'كتف خلفي بالحبل', muscle: 'كتف' },
-  { name: 'flat dumbbell press', muscle: 'صدر' }, { name: 'flat chest press', muscle: 'صدر' },
-  { name: 'smith flat chest press', muscle: 'صدر' }, { name: 'incline dumbbell press', muscle: 'صدر' },
-  { name: 'incline chest press', muscle: 'صدر' }, { name: 'butterfly machine', muscle: 'صدر' },
-  { name: 'machine chest press', muscle: 'صدر' }, { name: 'cable chest lower', muscle: 'صدر' },
-  { name: 'Cable Triceps Rope', muscle: 'بايسبس / ترايسبس' }, { name: 'ez biceps curl', muscle: 'بايسبس / ترايسبس' },
-  { name: 'overhead cable triceps', muscle: 'بايسبس / ترايسبس' }, { name: 'dumbbell hammer curl', muscle: 'بايسبس / ترايسبس' },
-  { name: 'tricep kickback', muscle: 'بايسبس / ترايسبس' }, { name: 'standing bicep dumbbell', muscle: 'بايسبس / ترايسبس' },
-  { name: 'EZ back bent over', muscle: 'ظهر' }, { name: 'back close grip', muscle: 'ظهر' },
-  { name: 'dumbbell single arm', muscle: 'ظهر' }, { name: 'T bar row machine close', muscle: 'ظهر' },
-  { name: 'T bar row machine wide', muscle: 'ظهر' }, { name: 'wide grip lat pull-down', muscle: 'ظهر' },
-  { name: 'cable v grip lat pulldown', muscle: 'ظهر' }, { name: 'back extension', muscle: 'ظهر' },
+  {name:'leg extension',muscle:'أرجل'},{name:'leg curl',muscle:'أرجل'},{name:'lunges',muscle:'أرجل'},
+  {name:'dumbell squat',muscle:'أرجل'},{name:'smith squat',muscle:'أرجل'},{name:'leg press',muscle:'أرجل'},
+  {name:'الضامه',muscle:'أرجل'},{name:'السمانه جهاز',muscle:'أرجل'},
+  {name:'shoulder press',muscle:'كتف'},{name:'ترابيس',muscle:'كتف'},{name:'رفرفه جانبي بالدمبل',muscle:'كتف'},
+  {name:'رفرفه جانبي بالكيبل',muscle:'كتف'},{name:'تجميع كتف',muscle:'كتف'},{name:'رفرفه امامي جلوس',muscle:'كتف'},
+  {name:'رفرفه امامي',muscle:'كتف'},{name:'كتف خلفي جهاز',muscle:'كتف'},{name:'كتف خلفي بالحبل',muscle:'كتف'},
+  {name:'flat dumbbell press',muscle:'صدر'},{name:'flat chest press',muscle:'صدر'},{name:'smith flat chest press',muscle:'صدر'},
+  {name:'incline dumbbell press',muscle:'صدر'},{name:'incline chest press',muscle:'صدر'},{name:'butterfly machine',muscle:'صدر'},
+  {name:'machine chest press',muscle:'صدر'},{name:'cable chest lower',muscle:'صدر'},
+  {name:'Cable Triceps Rope',muscle:'بايسبس / ترايسبس'},{name:'ez biceps curl',muscle:'بايسبس / ترايسبس'},
+  {name:'overhead cable triceps',muscle:'بايسبس / ترايسبس'},{name:'dumbbell hammer curl',muscle:'بايسبس / ترايسبس'},
+  {name:'tricep kickback',muscle:'بايسبس / ترايسبس'},{name:'standing bicep dumbbell',muscle:'بايسبس / ترايسبس'},
+  {name:'EZ back bent over',muscle:'ظهر'},{name:'back close grip',muscle:'ظهر'},{name:'dumbbell single arm',muscle:'ظهر'},
+  {name:'T bar row machine close',muscle:'ظهر'},{name:'T bar row machine wide',muscle:'ظهر'},
+  {name:'wide grip lat pull-down',muscle:'ظهر'},{name:'cable v grip lat pulldown',muscle:'ظهر'},{name:'back extension',muscle:'ظهر'},
 ];
 
 // ── INIT ──
 async function initSupabase(url, key) {
-  try {
-    sbClient = window.supabase.createClient(url, key);
-    await setupDatabase();
-    initApp();
-  } catch(e) { console.error(e); }
+  try { sbClient = window.supabase.createClient(url, key); await setupDatabase(); initApp(); }
+  catch(e) { console.error(e); }
 }
-
 async function setupDatabase() {
   try { await sbClient.rpc('create_tables_if_not_exist'); } catch(e) {}
   const { error: e1 } = await sbClient.from('exercises').select('id').limit(1);
   if (e1 && e1.code === '42P01') throw new Error('Tables not created');
   const { data: existing } = await sbClient.from('exercises').select('id').limit(1);
-  if (!existing || existing.length === 0) {
-    await sbClient.from('exercises').insert(DEFAULT_EXERCISES.map(e => ({ name: e.name, muscle: e.muscle, image_url: null })));
-  }
+  if (!existing || existing.length === 0)
+    await sbClient.from('exercises').insert(DEFAULT_EXERCISES.map(e => ({ name:e.name, muscle:e.muscle, image_url:null })));
 }
 
 // ── APP ──
-let currentScreen = 'home';
-let screenStack = [];
-let currentExercise = null;
-let manageTab = 'exercises';
-let pickerMuscleFilter = null;
-let pickerAllExercises = [];
+let currentScreen = 'home', screenStack = [], currentExercise = null;
+let manageTab = 'exercises', pickerMuscleFilter = null, pickerAllExercises = [];
 let calYear, calMonth;
 
 function initApp() {
   const now = new Date();
   calYear = now.getFullYear(); calMonth = now.getMonth();
-  document.getElementById('today-date').textContent = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('today-date').textContent = now.toLocaleDateString('ar-EG', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
   loadHome();
 }
 
@@ -533,36 +417,33 @@ function navigate(screen) {
   showScreen(screen);
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === screen));
   document.getElementById('back-btn').style.display = 'none';
-  document.getElementById('header-title').textContent = { home: '🏋️ جيم تراكر', history: '📅 التقويم', weight: '⚖️ وزن الجسم', manage: '⚙️ الإدارة' }[screen];
+  document.getElementById('header-title').textContent = {home:'🏋️ جيم تراكر',history:'📅 التقويم',weight:'⚖️ وزن الجسم',manage:'⚙️ الإدارة'}[screen];
 }
-
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('screen-'+name).classList.add('active');
   currentScreen = name;
-  if (name === 'home') loadHome();
-  if (name === 'history') loadHistory();
-  if (name === 'weight') loadWeightScreen();
-  if (name === 'manage') loadManage();
+  if (name==='home') loadHome();
+  if (name==='history') loadHistory();
+  if (name==='weight') loadWeightScreen();
+  if (name==='manage') loadManage();
 }
-
 function pushScreen(name, title) {
   screenStack.push(currentScreen);
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('screen-'+name).classList.add('active');
   currentScreen = name;
   document.getElementById('back-btn').style.display = 'block';
   document.getElementById('header-title').textContent = title || '';
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 }
-
 function goBack() {
   if (screenStack.length > 0) {
     const prev = screenStack.pop();
     if (['home','history','weight','manage'].includes(prev)) navigate(prev);
     else {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-' + prev).classList.add('active');
+      document.getElementById('screen-'+prev).classList.add('active');
       currentScreen = prev;
       if (screenStack.length === 0) document.getElementById('back-btn').style.display = 'none';
     }
@@ -574,139 +455,154 @@ async function loadHome() {
   const { data: exercises } = await sbClient.from('exercises').select('muscle');
   const counts = {};
   (exercises||[]).forEach(e => { counts[e.muscle] = (counts[e.muscle]||0)+1; });
-
   document.getElementById('muscle-grid').innerHTML = MUSCLES.map(m => `
     <div class="muscle-card" data-muscle="${m.name}" onclick="openMuscleExercises('${m.name}')">
-      <div class="muscle-icon">${m.icon}</div>
-      <div class="muscle-name">${m.name}</div>
+      <div class="muscle-icon">${m.icon}</div><div class="muscle-name">${m.name}</div>
       <div class="muscle-count">${counts[m.name]||0} تمرين</div>
     </div>`).join('');
 
-  // Body weight strip
-  const { data: bwData } = await sbClient.from('body_weight').select('*').order('recorded_at', { ascending: false }).limit(2);
+  // Weekly stats
+  const { data: allSessions } = await sbClient.from('sessions').select('*').order('logged_at', {ascending:false}).limit(200);
+  loadWeeklyStats(allSessions||[]);
+
+  // Body weight
+  const { data: bwData } = await sbClient.from('body_weight').select('*').order('recorded_at',{ascending:false}).limit(2);
   if (bwData && bwData.length > 0) {
-    const latest = bwData[0];
-    document.getElementById('bw-current').textContent = latest.weight + ' كج';
+    document.getElementById('bw-current').textContent = bwData[0].weight + ' كج';
     if (bwData.length > 1) {
-      const diff = (latest.weight - bwData[1].weight).toFixed(1);
-      const sign = diff > 0 ? '+' : '';
-      document.getElementById('bw-change').textContent = `${sign}${diff} كج من آخر قياس`;
-      document.getElementById('bw-change').style.color = diff > 0 ? '#ff5c6c' : '#34c78a';
+      const diff = (bwData[0].weight - bwData[1].weight).toFixed(1);
+      document.getElementById('bw-change').textContent = (diff>0?'+':'')+diff+' كج من آخر قياس';
+      document.getElementById('bw-change').style.color = diff>0 ? '#ff5c6c' : '#34c78a';
     }
   }
 
-  // Recent sessions with quick log btn
-  const { data: sessions } = await sbClient.from('sessions').select('*').order('logged_at', { ascending: false }).limit(8);
+  // Recent sessions
+  const sessions = (allSessions||[]).slice(0, 8);
   const recentEl = document.getElementById('recent-sessions');
-  if (!sessions || sessions.length === 0) {
-    recentEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>مفيش جلسات لسه، ابدأ بتسجيل أول تمرين!</p></div>';
-    return;
-  }
+  if (!sessions.length) { recentEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>مفيش جلسات لسه!</p></div>'; return; }
   recentEl.innerHTML = sessions.map(s => {
-    const muscle = MUSCLES.find(m => m.name === s.muscle) || { icon: '💪', color: '#888' };
-    const maxW = Math.max(...(s.sets||[]).map(x => x.weight||0));
-    const date = new Date(s.logged_at).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric' });
+    const muscle = MUSCLES.find(m => m.name===s.muscle)||{icon:'💪',color:'#888'};
+    const maxW = Math.max(...(s.sets||[]).map(x=>x.weight||0));
+    const date = new Date(s.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'});
     return `<div class="session-card">
       <div class="session-icon" style="background:${muscle.color}22;">${muscle.icon}</div>
       <div class="session-info" onclick="openExerciseDetail('${s.exercise_id}')">
         <div class="session-name">${s.exercise_name}</div>
         <div class="session-meta">${date} · ${(s.sets||[]).length} مجموعات · ${maxW} كج</div>
       </div>
-      <button class="session-quick-log" onclick="openLogScreen('${s.exercise_id}')" title="سجل نفس التمرين">➕</button>
+      <button class="session-quick-log" onclick="openLogScreen('${s.exercise_id}')">➕</button>
     </div>`;
   }).join('');
+}
+
+function loadWeeklyStats(allSessions) {
+  const now = new Date();
+  // Start of current week (Saturday)
+  const dayOfWeek = now.getDay(); // 0=Sun
+  const daysFromSat = (dayOfWeek + 1) % 7;
+  const weekStart = new Date(now); weekStart.setDate(now.getDate() - daysFromSat); weekStart.setHours(0,0,0,0);
+  const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);
+
+  const thisSessions = allSessions.filter(s => { const d=new Date(s.logged_at); return d>=weekStart && d<weekEnd; });
+  const uniqueDays = new Set(thisSessions.map(s => new Date(s.logged_at).toDateString())).size;
+  const totalKg = thisSessions.reduce((sum,s) => sum + (s.sets||[]).reduce((a,x)=>a+(x.weight||0)*(x.reps||0),0), 0);
+
+  document.getElementById('ws-days').textContent = uniqueDays;
+  document.getElementById('ws-sessions').textContent = thisSessions.length;
+  document.getElementById('ws-kg').textContent = totalKg > 999 ? (totalKg/1000).toFixed(1)+'k' : Math.round(totalKg);
+
+  // Best week calculation
+  if (allSessions.length > 0) {
+    const weekMap = {};
+    allSessions.forEach(s => {
+      const d = new Date(s.logged_at);
+      const dows = (d.getDay()+1)%7;
+      const ws = new Date(d); ws.setDate(d.getDate()-dows); ws.setHours(0,0,0,0);
+      const key = ws.toISOString().split('T')[0];
+      if (!weekMap[key]) weekMap[key] = { sessions:0, days:new Set(), kg:0, label: ws.toLocaleDateString('ar-EG',{month:'short',day:'numeric'}) };
+      weekMap[key].sessions++;
+      weekMap[key].days.add(d.toDateString());
+      weekMap[key].kg += (s.sets||[]).reduce((a,x)=>a+(x.weight||0)*(x.reps||0),0);
+    });
+    const best = Object.values(weekMap).sort((a,b) => b.days.size - a.days.size || b.sessions - a.sessions)[0];
+    if (best && best.days.size > 0) {
+      document.getElementById('best-week-card').style.display = 'flex';
+      document.getElementById('best-week-val').textContent = `${best.days.size} أيام تدريب · ${best.sessions} تمرين (أسبوع ${best.label})`;
+    }
+  }
 }
 
 // ── EXERCISE LIST ──
 async function openMuscleExercises(muscle) {
-  const m = MUSCLES.find(x => x.name === muscle);
+  const m = MUSCLES.find(x=>x.name===muscle);
   pushScreen('exercises', `${m?.icon||''} ${muscle}`);
   const el = document.getElementById('exercise-list-content');
-  el.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث في التمارين..." oninput="filterExerciseList(this.value)" id="ex-list-search"/></div><div id="ex-list-items"><div class="loader"><div class="spinner"></div></div></div>`;
-  const { data: allEx } = await sbClient.from('exercises').select('*').eq('muscle', muscle).order('name');
-  const ids = (allEx||[]).map(e => e.id);
-  let lastMap = {}, prMap = {};
+  el.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث..." oninput="filterExerciseList(this.value)" /></div><div id="ex-list-items"><div class="loader"><div class="spinner"></div></div></div>`;
+  const { data: allEx } = await sbClient.from('exercises').select('*').eq('muscle',muscle).order('name');
+  const ids = (allEx||[]).map(e=>e.id);
+  let lastMap={}, prMap={};
   if (ids.length > 0) {
-    const { data: lastSessions } = await sbClient.from('sessions').select('exercise_id, sets, logged_at').in('exercise_id', ids).order('logged_at', { ascending: false });
-    (lastSessions||[]).forEach(s => {
-      if (!lastMap[s.exercise_id]) lastMap[s.exercise_id] = s;
-      const w = Math.max(...(s.sets||[]).map(x => x.weight||0));
-      if (!prMap[s.exercise_id] || w > prMap[s.exercise_id]) prMap[s.exercise_id] = w;
+    const { data: ls } = await sbClient.from('sessions').select('exercise_id,sets,logged_at').in('exercise_id',ids).order('logged_at',{ascending:false});
+    (ls||[]).forEach(s => {
+      if (!lastMap[s.exercise_id]) lastMap[s.exercise_id]=s;
+      const w=Math.max(...(s.sets||[]).map(x=>x.weight||0));
+      if (!prMap[s.exercise_id]||w>prMap[s.exercise_id]) prMap[s.exercise_id]=w;
     });
   }
-  window._exListData = { exercises: allEx||[], lastMap, prMap };
+  window._exListData = { exercises:allEx||[], lastMap, prMap };
   renderExerciseList(allEx||[], lastMap, prMap);
 }
-
 function filterExerciseList(q) {
   if (!window._exListData) return;
-  const { exercises, lastMap, prMap } = window._exListData;
-  renderExerciseList(q ? exercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : exercises, lastMap, prMap);
+  const {exercises,lastMap,prMap} = window._exListData;
+  renderExerciseList(q?exercises.filter(e=>e.name.toLowerCase().includes(q.toLowerCase())):exercises, lastMap, prMap);
 }
-
 function renderExerciseList(exercises, lastMap, prMap) {
   const el = document.getElementById('ex-list-items');
-  if (!exercises.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>مفيش نتايج</p></div>'; return; }
+  if (!exercises.length) { el.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><p>مفيش نتايج</p></div>'; return; }
   el.innerHTML = exercises.map(ex => {
-    const last = lastMap[ex.id];
-    const lastW = last ? Math.max(...(last.sets||[]).map(x=>x.weight||0)) : 0;
-    const pr = prMap[ex.id] || 0;
-    const lastText = last ? `آخر: ${lastW} كج · ${new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}` : 'لم يُسجَّل بعد';
-    const prBadge = pr > 0 ? `<span class="pr-badge">🏆 ${pr} كج</span>` : '';
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;" />` : getMuscleIcon(ex.muscle);
+    const last=lastMap[ex.id], pr=prMap[ex.id]||0;
+    const lastText = last ? `آخر: ${Math.max(...(last.sets||[]).map(x=>x.weight||0))} كج · ${new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}` : 'لم يُسجَّل بعد';
+    const prBadge = pr>0?`<span class="pr-badge">🏆 ${pr} كج</span>`:'';
+    const thumb = ex.image_url?`<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;"/>`:getMuscleIcon(ex.muscle);
     return `<div class="exercise-item">
       <div class="exercise-thumb" onclick="openExerciseDetail('${ex.id}')">${thumb}</div>
-      <div class="exercise-info" onclick="openExerciseDetail('${ex.id}')">
-        <div class="exercise-name">${ex.name} ${prBadge}</div>
-        <div class="exercise-last">${lastText}</div>
-      </div>
+      <div class="exercise-info" onclick="openExerciseDetail('${ex.id}')"><div class="exercise-name">${ex.name} ${prBadge}</div><div class="exercise-last">${lastText}</div></div>
       <div class="exercise-actions"><button class="icon-btn" onclick="openLogScreen('${ex.id}')">➕</button></div>
     </div>`;
   }).join('');
 }
-
-function getMuscleIcon(muscle) {
-  const m = MUSCLES.find(x => x.name === muscle);
-  return `<span style="font-size:1.4rem;">${m?.icon||'💪'}</span>`;
-}
+function getMuscleIcon(muscle) { const m=MUSCLES.find(x=>x.name===muscle); return `<span style="font-size:1.4rem;">${m?.icon||'💪'}</span>`; }
 
 // ── LOG SESSION ──
 let setCount = 0;
 async function openLogScreen(exerciseId) {
   closeModal('modal-picker');
   pushScreen('log', 'تسجيل جلسة');
-  const { data: ex } = await sbClient.from('exercises').select('*').eq('id', exerciseId).single();
+  const { data: ex } = await sbClient.from('exercises').select('*').eq('id',exerciseId).single();
   currentExercise = ex;
-  const { data: lastSess } = await sbClient.from('sessions').select('*').eq('exercise_id', exerciseId).order('logged_at', { ascending: false }).limit(2);
-  const last = lastSess?.[0], prev = lastSess?.[1];
-  const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
-  const thumb = ex.image_url ? `<div class="log-exercise-thumb"><img src="${ex.image_url}" /></div>` : `<div class="log-exercise-thumb" style="background:${muscle.color}22;">${muscle.icon}</div>`;
+  const { data: lastSess } = await sbClient.from('sessions').select('*').eq('exercise_id',exerciseId).order('logged_at',{ascending:false}).limit(2);
+  const last=lastSess?.[0], prev=lastSess?.[1];
+  const muscle = MUSCLES.find(m=>m.name===ex.muscle)||{icon:'💪',color:'#888'};
+  const thumb = ex.image_url?`<div class="log-exercise-thumb"><img src="${ex.image_url}"/></div>`:`<div class="log-exercise-thumb" style="background:${muscle.color}22;">${muscle.icon}</div>`;
 
   let prevHtml = '';
   if (last) {
-    const lastMaxW = Math.max(...(last.sets||[]).map(x=>x.weight||0));
-    const prevMaxW = prev ? Math.max(...(prev.sets||[]).map(x=>x.weight||0)) : null;
-    let compareHtml = '';
-    if (prevMaxW !== null) {
-      const diff = lastMaxW - prevMaxW;
-      if (diff > 0) compareHtml = `<span class="compare-up">↑ +${diff} كج</span>`;
-      else if (diff < 0) compareHtml = `<span class="compare-down">↓ ${diff} كج</span>`;
-      else compareHtml = `<span class="compare-same">= نفس الوزن</span>`;
-    }
-    const date = new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'});
-    prevHtml = `<div class="prev-record"><span style="font-size:1.3rem;">🏆</span><div style="flex:1;"><div class="label">آخر جلسة (${date})</div><div class="value">${lastMaxW} كج · ${(last.sets||[]).length} مجموعات ${compareHtml}</div></div></div>`;
+    const lastMaxW=Math.max(...(last.sets||[]).map(x=>x.weight||0));
+    const prevMaxW=prev?Math.max(...(prev.sets||[]).map(x=>x.weight||0)):null;
+    let cmp='';
+    if (prevMaxW!==null){const d=lastMaxW-prevMaxW;cmp=d>0?`<span class="compare-up">↑ +${d} كج</span>`:d<0?`<span class="compare-down">↓ ${d} كج</span>`:`<span class="compare-same">= نفس الوزن</span>`;}
+    prevHtml=`<div class="prev-record"><span style="font-size:1.3rem;">🏆</span><div style="flex:1;"><div class="label">آخر جلسة (${new Date(last.logged_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})})</div><div class="value">${lastMaxW} كج · ${(last.sets||[]).length} مجموعات ${cmp}</div></div></div>`;
   }
-
-  const initSets = last?.sets?.length ? last.sets : Array(3).fill({ weight: '', reps: '' });
+  const initSets = last?.sets?.length ? last.sets : Array(3).fill({weight:'',reps:''});
   setCount = initSets.length;
   const todayStr = new Date().toISOString().split('T')[0];
-
   document.getElementById('log-content').innerHTML = `
     <div class="log-header">${thumb}<div><div style="font-size:1rem;font-weight:700;">${ex.name}</div><div style="font-size:0.8rem;color:${muscle.color};margin-top:3px;">${ex.muscle}</div></div></div>
     ${prevHtml}
     <div class="section-title">المجموعات</div>
     <div class="set-label-row"><div></div><div class="set-label">الوزن (كج)</div><div class="set-label">التكرارات</div><div></div></div>
-    <div class="sets-container" id="sets-rows">${initSets.map((s,i) => buildSetRow(i+1, s.weight||'', s.reps||'')).join('')}</div>
+    <div class="sets-container" id="sets-rows">${initSets.map((s,i)=>buildSetRow(i+1,s.weight||'',s.reps||'')).join('')}</div>
     <button class="add-set-btn" onclick="addSetRow()">+ إضافة مجموعة</button>
     <div class="section-title">تاريخ التمرين</div>
     <input type="date" class="form-input" id="session-date" style="margin-bottom:16px;direction:ltr;" />
@@ -715,291 +611,299 @@ async function openLogScreen(exerciseId) {
     <button class="btn-primary" onclick="saveSession()">💾 حفظ الجلسة</button>`;
   document.getElementById('session-date').value = todayStr;
 }
-
-function buildSetRow(num, weight, reps) {
+function buildSetRow(num,weight,reps) {
   return `<div class="set-row" id="set-row-${num}">
     <div class="set-num">${num}</div>
-    <input type="number" class="set-input" id="w-${num}" value="${weight}" placeholder="0" inputmode="decimal" />
-    <input type="number" class="set-input" id="r-${num}" value="${reps}" placeholder="0" inputmode="numeric" />
+    <input type="number" class="set-input" id="w-${num}" value="${weight}" placeholder="0" inputmode="decimal"/>
+    <input type="number" class="set-input" id="r-${num}" value="${reps}" placeholder="0" inputmode="numeric"/>
     <button class="icon-btn danger" onclick="removeSetRow(${num})">✕</button>
   </div>`;
 }
-function addSetRow() { setCount++; document.getElementById('sets-rows').insertAdjacentHTML('beforeend', buildSetRow(setCount, '', '')); }
-function removeSetRow(num) { const row = document.getElementById('set-row-' + num); if (row && document.querySelectorAll('.set-row').length > 1) row.remove(); }
-
+function addSetRow(){setCount++;document.getElementById('sets-rows').insertAdjacentHTML('beforeend',buildSetRow(setCount,'',''));}
+function removeSetRow(num){const r=document.getElementById('set-row-'+num);if(r&&document.querySelectorAll('.set-row').length>1)r.remove();}
 async function saveSession() {
-  const rows = document.querySelectorAll('.set-row');
-  const sets = [];
-  rows.forEach(row => {
-    const num = row.id.replace('set-row-','');
-    sets.push({ weight: parseFloat(document.getElementById('w-'+num)?.value)||0, reps: parseInt(document.getElementById('r-'+num)?.value)||0 });
-  });
-  const notes = document.getElementById('session-notes')?.value || '';
-  const dateInput = document.getElementById('session-date')?.value;
-  const loggedAt = dateInput ? new Date(dateInput + 'T12:00:00').toISOString() : new Date().toISOString();
-  const { error } = await sbClient.from('sessions').insert({ exercise_id: currentExercise.id, exercise_name: currentExercise.name, muscle: currentExercise.muscle, sets, notes, logged_at: loggedAt });
-  if (error) { showToast('خطأ في الحفظ', 'error'); return; }
-  showToast('✅ تم الحفظ', 'success');
-  goBack();
+  const rows=document.querySelectorAll('.set-row'), sets=[];
+  rows.forEach(row=>{const num=row.id.replace('set-row-','');sets.push({weight:parseFloat(document.getElementById('w-'+num)?.value)||0,reps:parseInt(document.getElementById('r-'+num)?.value)||0});});
+  const notes=document.getElementById('session-notes')?.value||'';
+  const dateInput=document.getElementById('session-date')?.value;
+  const loggedAt=dateInput?new Date(dateInput+'T12:00:00').toISOString():new Date().toISOString();
+  const {error}=await sbClient.from('sessions').insert({exercise_id:currentExercise.id,exercise_name:currentExercise.name,muscle:currentExercise.muscle,sets,notes,logged_at:loggedAt});
+  if(error){showToast('خطأ في الحفظ','error');return;}
+  showToast('✅ تم الحفظ','success');goBack();
+}
+
+// ── EDIT SESSION ──
+let editSetCount = 0;
+async function openEditSession(sessionId) {
+  const {data:s} = await sbClient.from('sessions').select('*').eq('id',sessionId).single();
+  document.getElementById('edit-session-id').value = s.id;
+  document.getElementById('edit-session-title').textContent = `تعديل: ${s.exercise_name}`;
+  document.getElementById('edit-session-notes').value = s.notes||'';
+  editSetCount = (s.sets||[]).length;
+  document.getElementById('edit-sets-rows').innerHTML = (s.sets||[]).map((x,i)=>buildEditSetRow(i+1,x.weight,x.reps)).join('');
+  document.getElementById('modal-edit-session').classList.add('open');
+  document.getElementById('modal-edit-session').onclick = e=>{if(e.target===document.getElementById('modal-edit-session'))closeModal('modal-edit-session');};
+}
+function buildEditSetRow(num,weight,reps) {
+  return `<div class="set-row" id="edit-set-row-${num}">
+    <div class="set-num">${num}</div>
+    <input type="number" class="set-input" id="ew-${num}" value="${weight}" placeholder="0" inputmode="decimal"/>
+    <input type="number" class="set-input" id="er-${num}" value="${reps}" placeholder="0" inputmode="numeric"/>
+    <button class="icon-btn danger" onclick="removeEditSetRow(${num})">✕</button>
+  </div>`;
+}
+function addEditSetRow(){editSetCount++;document.getElementById('edit-sets-rows').insertAdjacentHTML('beforeend',buildEditSetRow(editSetCount,'',''));}
+function removeEditSetRow(num){const r=document.getElementById('edit-set-row-'+num);if(r&&document.querySelectorAll('#edit-sets-rows .set-row').length>1)r.remove();}
+async function saveEditSession() {
+  const id=document.getElementById('edit-session-id').value;
+  const rows=document.querySelectorAll('#edit-sets-rows .set-row'), sets=[];
+  rows.forEach(row=>{const num=row.id.replace('edit-set-row-','');sets.push({weight:parseFloat(document.getElementById('ew-'+num)?.value)||0,reps:parseInt(document.getElementById('er-'+num)?.value)||0});});
+  const notes=document.getElementById('edit-session-notes').value||'';
+  const {error}=await sbClient.from('sessions').update({sets,notes}).eq('id',id);
+  if(error){showToast('❌ '+error.message,'error');return;}
+  showToast('✅ تم التعديل','success');
+  closeModal('modal-edit-session');
+  openExerciseDetail(currentDetailExerciseId);
 }
 
 // ── EXERCISE DETAIL ──
+let currentDetailExerciseId = null;
 async function openExerciseDetail(exerciseId) {
-  pushScreen('detail', 'تفاصيل التمرين');
-  const el = document.getElementById('detail-content');
-  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  const { data: ex } = await sbClient.from('exercises').select('*').eq('id', exerciseId).single();
-  const { data: sessions } = await sbClient.from('sessions').select('*').eq('exercise_id', exerciseId).order('logged_at', { ascending: false }).limit(30);
-  const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
-  const allWeights = (sessions||[]).flatMap(s => (s.sets||[]).map(x => x.weight||0));
-  const pr = allWeights.length ? Math.max(...allWeights) : 0;
-  const totalSessions = (sessions||[]).length;
-  const avgWeight = allWeights.length ? (allWeights.reduce((a,b)=>a+b,0)/allWeights.length).toFixed(1) : 0;
-  const thumbHtml = ex.image_url ? `<div class="exercise-detail-img"><img src="${ex.image_url}" /></div>` : `<div class="exercise-detail-img" style="background:${muscle.color}22;">${muscle.icon}</div>`;
-  const historyHtml = (sessions||[]).map((s, idx) => {
-    const date = new Date(s.logged_at).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});
-    const maxW = Math.max(...(s.sets||[]).map(x=>x.weight||0));
-    const prevS = sessions[idx+1];
-    const prevMaxW = prevS ? Math.max(...(prevS.sets||[]).map(x=>x.weight||0)) : null;
-    let cmp = '';
-    if (prevMaxW !== null) { const d = maxW-prevMaxW; cmp = d>0?`<span class="compare-up">↑ +${d}</span>`:d<0?`<span class="compare-down">↓ ${d}</span>`:`<span class="compare-same">→</span>`; }
-    const isPR = maxW === pr && pr > 0;
-    const chips = (s.sets||[]).map((x,i) => `<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
-    return `<div class="history-item"><div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div><div class="history-sets-grid">${chips}</div>${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:8px;">📝 ${s.notes}</div>`:''}</div>`;
-  }).join('') || '<div class="empty-state"><div class="empty-icon">📊</div><p>لا يوجد تاريخ بعد</p></div>';
-  el.innerHTML = `${thumbHtml}<div style="font-size:1.2rem;font-weight:700;margin-bottom:4px;">${ex.name}</div><div style="font-size:0.85rem;color:${muscle.color};margin-bottom:16px;">${ex.muscle}</div><div class="stats-row"><div class="stat-box"><div class="stat-val">${pr} 🏆</div><div class="stat-label">أعلى وزن</div></div><div class="stat-box"><div class="stat-val">${totalSessions}</div><div class="stat-label">جلسات</div></div><div class="stat-box"><div class="stat-val">${avgWeight}</div><div class="stat-label">متوسط</div></div></div><button class="quick-log-btn" onclick="openLogScreen('${ex.id}')">+ تسجيل جلسة</button><div class="section-title" style="margin-top:8px;">التاريخ</div>${historyHtml}`;
+  currentDetailExerciseId = exerciseId;
+  pushScreen('detail','تفاصيل التمرين');
+  const el=document.getElementById('detail-content');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const {data:ex}=await sbClient.from('exercises').select('*').eq('id',exerciseId).single();
+  const {data:sessions}=await sbClient.from('sessions').select('*').eq('exercise_id',exerciseId).order('logged_at',{ascending:false}).limit(30);
+  const muscle=MUSCLES.find(m=>m.name===ex.muscle)||{icon:'💪',color:'#888'};
+  const allW=(sessions||[]).flatMap(s=>(s.sets||[]).map(x=>x.weight||0));
+  const pr=allW.length?Math.max(...allW):0;
+  const avgW=allW.length?(allW.reduce((a,b)=>a+b,0)/allW.length).toFixed(1):0;
+  const thumbHtml=ex.image_url?`<div class="exercise-detail-img"><img src="${ex.image_url}"/></div>`:`<div class="exercise-detail-img" style="background:${muscle.color}22;">${muscle.icon}</div>`;
+
+  // Progress chart — last 10 sessions (oldest→newest)
+  let chartHtml = '';
+  if ((sessions||[]).length > 1) {
+    const chartData = [...(sessions||[])].reverse().slice(-10);
+    const maxW2 = Math.max(...chartData.map(s=>Math.max(...(s.sets||[]).map(x=>x.weight||0))));
+    const minW2 = Math.min(...chartData.map(s=>Math.max(...(s.sets||[]).map(x=>x.weight||0))));
+    const range2 = maxW2-minW2||1;
+    chartHtml = `<div class="progress-chart-wrap">
+      <div class="section-title">تطور الوزن</div>
+      <div class="progress-chart">
+        ${chartData.map(s=>{
+          const w=Math.max(...(s.sets||[]).map(x=>x.weight||0));
+          const h=Math.max(8,Math.round(((w-minW2)/range2)*70+10));
+          const d=new Date(s.logged_at).toLocaleDateString('ar-EG',{month:'numeric',day:'numeric'});
+          return `<div class="progress-bar-wrap"><div class="progress-bar" style="height:${h}px;"></div><div class="progress-bar-val">${w}</div><div class="progress-bar-val">${d}</div></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  const historyHtml=(sessions||[]).map((s,idx)=>{
+    const date=new Date(s.logged_at).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});
+    const maxW=Math.max(...(s.sets||[]).map(x=>x.weight||0));
+    const prevS=sessions[idx+1], prevMaxW=prevS?Math.max(...(prevS.sets||[]).map(x=>x.weight||0)):null;
+    let cmp='';
+    if(prevMaxW!==null){const d=maxW-prevMaxW;cmp=d>0?`<span class="compare-up">↑ +${d}</span>`:d<0?`<span class="compare-down">↓ ${d}</span>`:`<span class="compare-same">→</span>`;}
+    const isPR=maxW===pr&&pr>0;
+    const chips=(s.sets||[]).map((x,i)=>`<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
+    return `<div class="history-item">
+      <div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div>
+      <div class="history-sets-grid">${chips}</div>
+      ${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">📝 ${s.notes}</div>`:''}
+      <button class="history-edit-btn" onclick="openEditSession('${s.id}')">✏️ تعديل الجلسة</button>
+    </div>`;
+  }).join('')||'<div class="empty-state"><div class="empty-icon">📊</div><p>لا يوجد تاريخ بعد</p></div>';
+
+  el.innerHTML=`${thumbHtml}
+    <div style="font-size:1.2rem;font-weight:700;margin-bottom:4px;">${ex.name}</div>
+    <div style="font-size:0.85rem;color:${muscle.color};margin-bottom:16px;">${ex.muscle}</div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val">${pr} 🏆</div><div class="stat-label">أعلى وزن</div></div>
+      <div class="stat-box"><div class="stat-val">${(sessions||[]).length}</div><div class="stat-label">جلسات</div></div>
+      <div class="stat-box"><div class="stat-val">${avgW}</div><div class="stat-label">متوسط</div></div>
+    </div>
+    ${chartHtml}
+    <button class="quick-log-btn" onclick="openLogScreen('${ex.id}')">+ تسجيل جلسة</button>
+    <div class="section-title">التاريخ</div>${historyHtml}`;
 }
 
-// ── HISTORY ──
+// ── HISTORY / CALENDAR ──
 async function loadHistory() {
-  const el = document.getElementById('history-content');
-  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  const { data: sessions } = await sbClient.from('sessions').select('*').order('logged_at', { ascending: false }).limit(200);
+  const el=document.getElementById('history-content');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const {data:sessions}=await sbClient.from('sessions').select('*').order('logged_at',{ascending:false}).limit(200);
   renderCalendar(sessions||[]);
 }
-
 function renderCalendar(sessions) {
-  const el = document.getElementById('history-content');
-  const now = new Date();
-  const sessionDates = {};
-  (sessions||[]).forEach(s => { const d=new Date(s.logged_at); const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; if(!sessionDates[key]) sessionDates[key]=[]; sessionDates[key].push(s); });
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const monthName = new Date(calYear, calMonth, 1).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' });
-  const thisMonthSessions = sessions.filter(s => { const d=new Date(s.logged_at); return d.getMonth()===calMonth && d.getFullYear()===calYear; });
-  const uniqueDays = new Set(thisMonthSessions.map(s => new Date(s.logged_at).getDate())).size;
-  const dayNames = ['أح','إث','ثل','أر','خم','جم','سب'];
-  let calCells = '';
-  for (let i=0; i<firstDay; i++) calCells += `<div class="cal-day empty"></div>`;
-  for (let d=1; d<=daysInMonth; d++) {
-    const key=`${calYear}-${calMonth}-${d}`, hasSess=!!sessionDates[key], isToday=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
-    calCells += `<div class="${['cal-day',hasSess?'has-session':'',isToday?'today':''].filter(Boolean).join(' ')}" ${hasSess?`onclick="showDaySessions('${key}')"`:''}>${d}</div>`;
+  const el=document.getElementById('history-content'), now=new Date();
+  const sessionDates={};
+  (sessions||[]).forEach(s=>{const d=new Date(s.logged_at);const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;if(!sessionDates[key])sessionDates[key]=[];sessionDates[key].push(s);});
+  const firstDay=new Date(calYear,calMonth,1).getDay(), daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const monthName=new Date(calYear,calMonth,1).toLocaleDateString('ar-EG',{month:'long',year:'numeric'});
+  const thisMonthS=sessions.filter(s=>{const d=new Date(s.logged_at);return d.getMonth()===calMonth&&d.getFullYear()===calYear;});
+  const uniqueDays=new Set(thisMonthS.map(s=>new Date(s.logged_at).getDate())).size;
+  const dayNames=['أح','إث','ثل','أر','خم','جم','سب'];
+  let calCells='';
+  for(let i=0;i<firstDay;i++) calCells+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const key=`${calYear}-${calMonth}-${d}`,hasSess=!!sessionDates[key],isToday=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
+    calCells+=`<div class="${['cal-day',hasSess?'has-session':'',isToday?'today':''].filter(Boolean).join(' ')}" ${hasSess?`onclick="showDaySessions('${key}')"`:''}>${d}</div>`;
   }
-  const groups = {};
-  (sessions||[]).slice(0,60).forEach(s => { const d=new Date(s.logged_at).toLocaleDateString('ar-EG',{weekday:'short',month:'short',day:'numeric'}); if(!groups[d]) groups[d]=[]; groups[d].push(s); });
-  const histHtml = Object.entries(groups).map(([date, items]) =>
-    `<div class="history-date-group"><div class="history-date">${date}</div>${items.map(s => {
+  const groups={};
+  (sessions||[]).slice(0,60).forEach(s=>{const d=new Date(s.logged_at).toLocaleDateString('ar-EG',{weekday:'short',month:'short',day:'numeric'});if(!groups[d])groups[d]=[];groups[d].push(s);});
+  const histHtml=Object.entries(groups).map(([date,items])=>
+    `<div class="history-date-group"><div class="history-date">${date}</div>${items.map(s=>{
       const muscle=MUSCLES.find(m=>m.name===s.muscle)||{icon:'💪',color:'#888'};
       const chips=(s.sets||[]).map((x,i)=>`<div class="history-set-chip">م${i+1}: <span>${x.weight}كج×${x.reps}</span></div>`).join('');
       return `<div class="history-item" onclick="openExerciseDetail('${s.exercise_id}')"><div class="history-item-header"><div class="history-item-name">${s.exercise_name}</div><span class="history-item-muscle" style="background:${muscle.color}22;color:${muscle.color};">${muscle.icon} ${s.muscle}</span></div><div class="history-sets-grid">${chips}</div></div>`;
     }).join('')}</div>`).join('');
-  el.innerHTML = `<div class="calendar-header"><button class="cal-nav" onclick="changeMonth(-1)">‹</button><div class="calendar-month">${monthName}</div><button class="cal-nav" onclick="changeMonth(1)">›</button></div><div class="cal-stats"><div class="cal-stat"><div class="val">${uniqueDays}</div><div class="lbl">أيام تدريب</div></div><div class="cal-stat"><div class="val">${thisMonthSessions.length}</div><div class="lbl">تمرين مسجل</div></div><div class="cal-stat"><div class="val">${daysInMonth-uniqueDays}</div><div class="lbl">يوم راحة</div></div></div><div class="calendar-grid">${dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}${calCells}</div><div class="section-title">السجل التفصيلي</div>${histHtml||'<div class="empty-state"><div class="empty-icon">📅</div><p>لا يوجد تدريبات بعد</p></div>'}`;
+  el.innerHTML=`<div class="calendar-header"><button class="cal-nav" onclick="changeMonth(-1)">‹</button><div class="calendar-month">${monthName}</div><button class="cal-nav" onclick="changeMonth(1)">›</button></div>
+    <div class="cal-stats"><div class="cal-stat"><div class="val">${uniqueDays}</div><div class="lbl">أيام تدريب</div></div><div class="cal-stat"><div class="val">${thisMonthS.length}</div><div class="lbl">تمرين مسجل</div></div><div class="cal-stat"><div class="val">${daysInMonth-uniqueDays}</div><div class="lbl">يوم راحة</div></div></div>
+    <div class="calendar-grid">${dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}${calCells}</div>
+    <div class="section-title">السجل التفصيلي</div>
+    ${histHtml||'<div class="empty-state"><div class="empty-icon">📅</div><p>لا يوجد تدريبات بعد</p></div>'}`;
 }
-function changeMonth(dir) { calMonth+=dir; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} loadHistory(); }
-function showDaySessions(key) { const [y,m,d]=key.split('-'); const label=new Date(parseInt(y),parseInt(m),parseInt(d)).toLocaleDateString('ar-EG',{weekday:'long',month:'long',day:'numeric'}); showToast('📅 '+label,'success'); }
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}loadHistory();}
+function showDaySessions(key){const [y,m,d]=key.split('-');showToast('📅 '+new Date(parseInt(y),parseInt(m),parseInt(d)).toLocaleDateString('ar-EG',{weekday:'long',month:'long',day:'numeric'}),'success');}
 
 // ── BODY WEIGHT ──
 async function loadWeightScreen() {
-  const el = document.getElementById('weight-content');
-  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  const { data: entries } = await sbClient.from('body_weight').select('*').order('recorded_at', { ascending: false }).limit(30);
-  const list = entries || [];
-  const latest = list[0];
-  const oldest = list[list.length-1];
-  const totalChange = list.length > 1 ? (latest.weight - oldest.weight).toFixed(1) : null;
-
-  // Chart
-  const chartEntries = [...list].reverse().slice(-14);
-  const maxW = Math.max(...chartEntries.map(e=>e.weight));
-  const minW = Math.min(...chartEntries.map(e=>e.weight));
-  const range = maxW - minW || 1;
-  const chartHtml = chartEntries.map(e => {
-    const h = Math.max(20, Math.round(((e.weight - minW) / range) * 80 + 20));
-    const d = new Date(e.recorded_at).toLocaleDateString('ar-EG',{month:'numeric',day:'numeric'});
-    return `<div class="bw-bar-wrap"><div class="bw-bar" style="height:${h}px;"></div><div class="bw-bar-label">${e.weight}</div><div class="bw-bar-label">${d}</div></div>`;
-  }).join('');
-
-  const entriesHtml = list.map((e, idx) => {
-    const next = list[idx+1];
-    let trend = '';
-    if (next) { const diff=(e.weight-next.weight).toFixed(1); trend = diff>0?`<span class="bw-trend-up">↑ +${diff}</span>`:`<span class="bw-trend-down">↓ ${diff}</span>`; }
-    const date = new Date(e.recorded_at).toLocaleDateString('ar-EG',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
-    return `<div class="bw-entry"><div><div class="bw-entry-weight">${e.weight} كج ${trend}</div><div class="bw-entry-date">${date}</div>${e.note?`<div class="bw-entry-note">📝 ${e.note}</div>`:''}</div><button class="icon-btn danger" onclick="deleteWeight('${e.id}')">🗑️</button></div>`;
-  }).join('');
-
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <div>
-        <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">الوزن الحالي</div>
-        <div style="font-size:2rem;font-weight:900;color:var(--accent-light);">${latest ? latest.weight+' كج' : '--'}</div>
-        ${totalChange !== null ? `<div style="font-size:0.8rem;color:${totalChange>0?'var(--accent2)':'var(--green)'};">${totalChange>0?'↑ +'+totalChange:'↓ '+totalChange} كج إجمالي</div>` : ''}
-      </div>
-      <button class="bw-btn" style="font-size:1rem;padding:12px 20px;" onclick="openAddWeightModal()">+ تسجيل</button>
-    </div>
-    ${chartEntries.length > 1 ? `<div class="bw-chart-area"><div class="section-title">آخر ${chartEntries.length} قياسات</div><div class="bw-chart">${chartHtml}</div></div>` : ''}
-    <div class="section-title">السجل</div>
-    ${entriesHtml || '<div class="empty-state"><div class="empty-icon">⚖️</div><p>لم تسجل وزنك بعد</p></div>'}`;
+  const el=document.getElementById('weight-content');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  const {data:entries}=await sbClient.from('body_weight').select('*').order('recorded_at',{ascending:false}).limit(30);
+  const list=entries||[], latest=list[0], oldest=list[list.length-1];
+  const totalChange=list.length>1?(latest.weight-oldest.weight).toFixed(1):null;
+  const chartEntries=[...list].reverse().slice(-14);
+  const maxW=Math.max(...chartEntries.map(e=>e.weight)), minW=Math.min(...chartEntries.map(e=>e.weight)), range=maxW-minW||1;
+  const chartHtml=chartEntries.map(e=>{const h=Math.max(20,Math.round(((e.weight-minW)/range)*80+20));const d=new Date(e.recorded_at).toLocaleDateString('ar-EG',{month:'numeric',day:'numeric'});return `<div class="bw-bar-wrap"><div class="bw-bar" style="height:${h}px;"></div><div class="bw-bar-label">${e.weight}</div><div class="bw-bar-label">${d}</div></div>`;}).join('');
+  const entriesHtml=list.map((e,idx)=>{const next=list[idx+1];let trend='';if(next){const diff=(e.weight-next.weight).toFixed(1);trend=diff>0?`<span class="bw-trend-up">↑ +${diff}</span>`:`<span class="bw-trend-down">↓ ${diff}</span>`;}const date=new Date(e.recorded_at).toLocaleDateString('ar-EG',{weekday:'short',year:'numeric',month:'short',day:'numeric'});return `<div class="bw-entry"><div><div class="bw-entry-weight">${e.weight} كج ${trend}</div><div class="bw-entry-date">${date}</div>${e.note?`<div style="font-size:0.75rem;color:var(--text-muted);">📝 ${e.note}</div>`:''}</div><button class="icon-btn danger" onclick="deleteWeight('${e.id}')">🗑️</button></div>`;}).join('');
+  el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">الوزن الحالي</div>
+    <div style="font-size:2rem;font-weight:900;color:var(--accent-light);">${latest?latest.weight+' كج':'--'}</div>
+    ${totalChange!==null?`<div style="font-size:0.8rem;color:${totalChange>0?'var(--accent2)':'var(--green)'};">${totalChange>0?'↑ +'+totalChange:'↓ '+totalChange} كج إجمالي</div>`:''}</div>
+    <button class="bw-btn" style="font-size:1rem;padding:12px 20px;" onclick="openAddWeightModal()">+ تسجيل</button>
+  </div>
+  ${chartEntries.length>1?`<div class="bw-chart-area"><div class="section-title">آخر ${chartEntries.length} قياسات</div><div class="bw-chart">${chartHtml}</div></div>`:''}
+  <div class="section-title">السجل</div>
+  ${entriesHtml||'<div class="empty-state"><div class="empty-icon">⚖️</div><p>لم تسجل وزنك بعد</p></div>'}`;
 }
-
-function openAddWeightModal() {
-  document.getElementById('bw-input').value = '';
-  document.getElementById('bw-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('bw-note').value = '';
-  document.getElementById('modal-weight').classList.add('open');
-  document.getElementById('modal-weight').onclick = e => { if(e.target===document.getElementById('modal-weight')) closeModal('modal-weight'); };
+function openAddWeightModal(){document.getElementById('bw-input').value='';document.getElementById('bw-date').value=new Date().toISOString().split('T')[0];document.getElementById('bw-note').value='';document.getElementById('modal-weight').classList.add('open');document.getElementById('modal-weight').onclick=e=>{if(e.target===document.getElementById('modal-weight'))closeModal('modal-weight');};}
+async function saveBodyWeight(){
+  const weight=parseFloat(document.getElementById('bw-input').value), date=document.getElementById('bw-date').value, note=document.getElementById('bw-note').value.trim();
+  if(!weight||weight<20||weight>300){showToast('ادخل وزن صحيح','error');return;}
+  const {error}=await sbClient.from('body_weight').insert({weight,note:note||null,recorded_at:date?new Date(date+'T08:00:00').toISOString():new Date().toISOString()});
+  if(error){showToast('❌ '+error.message,'error');return;}
+  showToast('✅ تم الحفظ','success');closeModal('modal-weight');
+  if(currentScreen==='weight')loadWeightScreen();
+  if(currentScreen==='home')loadHome();
 }
-
-async function saveBodyWeight() {
-  const weight = parseFloat(document.getElementById('bw-input').value);
-  const date = document.getElementById('bw-date').value;
-  const note = document.getElementById('bw-note').value.trim();
-  if (!weight || weight < 20 || weight > 300) { showToast('ادخل وزن صحيح', 'error'); return; }
-  const recordedAt = date ? new Date(date+'T08:00:00').toISOString() : new Date().toISOString();
-  const { error } = await sbClient.from('body_weight').insert({ weight, note: note||null, recorded_at: recordedAt });
-  if (error) { showToast('❌ ' + error.message, 'error'); return; }
-  showToast('✅ تم الحفظ', 'success');
-  closeModal('modal-weight');
-  if (currentScreen === 'weight') loadWeightScreen();
-  if (currentScreen === 'home') loadHome();
-}
-
-async function deleteWeight(id) {
-  if (!confirm('هتحذف هذا القياس؟')) return;
-  await sbClient.from('body_weight').delete().eq('id', id);
-  showToast('تم الحذف', 'success');
-  loadWeightScreen();
-}
+async function deleteWeight(id){if(!confirm('هتحذف هذا القياس؟'))return;await sbClient.from('body_weight').delete().eq('id',id);showToast('تم الحذف','success');loadWeightScreen();}
 
 // ── MANAGE ──
-async function loadManage() { await loadManageContent(); }
-function switchManageTab(tab) {
-  manageTab = tab;
-  document.querySelectorAll('.manage-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='exercises')||(i===1&&tab==='muscles')));
-  document.getElementById('manage-add-btn').style.display = tab === 'exercises' ? 'flex' : 'none';
+async function loadManage(){await loadManageContent();}
+function switchManageTab(tab){
+  manageTab=tab;
+  document.querySelectorAll('.manage-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='exercises')||(i===1&&tab==='muscles')));
+  document.getElementById('manage-add-btn').style.display=tab==='exercises'?'flex':'none';
   loadManageContent();
 }
-async function loadManageContent() {
-  const el = document.getElementById('manage-content');
-  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  if (manageTab === 'muscles') {
-    const { data: exercises } = await sbClient.from('exercises').select('muscle');
-    const counts = {};
-    (exercises||[]).forEach(e => { counts[e.muscle] = (counts[e.muscle]||0)+1; });
-    el.innerHTML = MUSCLES.map(m => `<div class="exercise-item"><div class="exercise-thumb" style="background:${m.color}22;font-size:1.4rem;display:flex;align-items:center;justify-content:center;">${m.icon}</div><div class="exercise-info"><div class="exercise-name">${m.name}</div><div class="exercise-last">${counts[m.name]||0} تمرين</div></div></div>`).join('');
+async function loadManageContent(){
+  const el=document.getElementById('manage-content');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  if(manageTab==='muscles'){
+    const {data:exercises}=await sbClient.from('exercises').select('muscle');
+    const counts={};(exercises||[]).forEach(e=>{counts[e.muscle]=(counts[e.muscle]||0)+1;});
+    el.innerHTML=MUSCLES.map(m=>`<div class="exercise-item"><div class="exercise-thumb" style="background:${m.color}22;font-size:1.4rem;display:flex;align-items:center;justify-content:center;">${m.icon}</div><div class="exercise-info"><div class="exercise-name">${m.name}</div><div class="exercise-last">${counts[m.name]||0} تمرين</div></div></div>`).join('');
     return;
   }
-  el.innerHTML = `<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث..." oninput="filterManageList(this.value)" id="manage-search"/></div><div id="manage-items"><div class="loader"><div class="spinner"></div></div></div>`;
-  const { data: exercises } = await sbClient.from('exercises').select('*').order('muscle').order('name');
-  window._manageExercises = exercises || [];
+  el.innerHTML=`<div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="ابحث..." oninput="filterManageList(this.value)"/></div><div id="manage-items"><div class="loader"><div class="spinner"></div></div></div>`;
+  const {data:exercises}=await sbClient.from('exercises').select('*').order('muscle').order('name');
+  window._manageExercises=exercises||[];
   renderManageList(exercises||[]);
 }
-function filterManageList(q) { if (!window._manageExercises) return; renderManageList(q ? window._manageExercises.filter(e => e.name.toLowerCase().includes(q.toLowerCase())) : window._manageExercises); }
-function renderManageList(exercises) {
-  const el = document.getElementById('manage-items');
-  if (!el) return;
-  if (!exercises.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏋️</div><p>لا يوجد تمارين</p></div>'; return; }
-  el.innerHTML = exercises.map(ex => {
-    const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon: '💪', color: '#888' };
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;" />` : `<span style="font-size:1.4rem;">${muscle.icon}</span>`;
+function filterManageList(q){if(!window._manageExercises)return;renderManageList(q?window._manageExercises.filter(e=>e.name.toLowerCase().includes(q.toLowerCase())):window._manageExercises);}
+function renderManageList(exercises){
+  const el=document.getElementById('manage-items');if(!el)return;
+  if(!exercises.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🏋️</div><p>لا يوجد تمارين</p></div>';return;}
+  el.innerHTML=exercises.map(ex=>{
+    const muscle=MUSCLES.find(m=>m.name===ex.muscle)||{icon:'💪',color:'#888'};
+    const thumb=ex.image_url?`<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;"/>`:`<span style="font-size:1.4rem;">${muscle.icon}</span>`;
     return `<div class="exercise-item"><div class="exercise-thumb">${thumb}</div><div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${muscle.color};">${ex.muscle}</div></div><div class="exercise-actions"><button class="icon-btn" onclick="openEditModal('${ex.id}')">✏️</button><button class="icon-btn danger" onclick="deleteExercise('${ex.id}','${ex.name.replace(/'/g,"\\'")}')">🗑️</button></div></div>`;
   }).join('');
 }
 
 // ── PICKER ──
-async function showExercisePicker() {
-  const modal = document.getElementById('modal-picker');
-  modal.classList.add('open');
-  modal.onclick = e => { if(e.target===modal) closeModal('modal-picker'); };
-  document.getElementById('picker-search').value = '';
-  pickerMuscleFilter = null;
-  document.getElementById('picker-muscles').innerHTML = `<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-weight:700;" onclick="setPickerMuscle(null,this)">الكل</button>` +
-    MUSCLES.map(m => `<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid ${m.color};background:transparent;color:${m.color};cursor:pointer;" onclick="setPickerMuscle('${m.name}',this)">${m.icon} ${m.name}</button>`).join('');
-  const { data: exercises } = await sbClient.from('exercises').select('*').order('name');
-  pickerAllExercises = exercises || [];
-  renderPickerList(pickerAllExercises);
+async function showExercisePicker(){
+  const modal=document.getElementById('modal-picker');modal.classList.add('open');modal.onclick=e=>{if(e.target===modal)closeModal('modal-picker');};
+  document.getElementById('picker-search').value='';pickerMuscleFilter=null;
+  document.getElementById('picker-muscles').innerHTML=`<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-weight:700;" onclick="setPickerMuscle(null,this)">الكل</button>`+
+    MUSCLES.map(m=>`<button style="padding:6px 12px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.8rem;border:1px solid ${m.color};background:transparent;color:${m.color};cursor:pointer;" onclick="setPickerMuscle('${m.name}',this)">${m.icon} ${m.name}</button>`).join('');
+  const {data:exercises}=await sbClient.from('exercises').select('*').order('name');
+  pickerAllExercises=exercises||[];renderPickerList(pickerAllExercises);
 }
-function setPickerMuscle(muscle, btn) {
-  pickerMuscleFilter = muscle;
-  document.querySelectorAll('#picker-muscles button').forEach(b => { b.style.background='transparent'; b.style.color=b.style.borderColor||'var(--accent)'; b.style.fontWeight='400'; });
-  btn.style.background=btn.style.borderColor||'var(--accent)'; btn.style.color='#fff'; btn.style.fontWeight='700';
+function setPickerMuscle(muscle,btn){
+  pickerMuscleFilter=muscle;
+  document.querySelectorAll('#picker-muscles button').forEach(b=>{b.style.background='transparent';b.style.color=b.style.borderColor||'var(--accent)';b.style.fontWeight='400';});
+  btn.style.background=btn.style.borderColor||'var(--accent)';btn.style.color='#fff';btn.style.fontWeight='700';
   onPickerSearch(document.getElementById('picker-search').value);
 }
-function onPickerSearch(q) {
-  let filtered = pickerMuscleFilter ? pickerAllExercises.filter(e => e.muscle===pickerMuscleFilter) : pickerAllExercises;
-  if (q) filtered = filtered.filter(e => e.name.toLowerCase().includes(q.toLowerCase()));
+function onPickerSearch(q){
+  let filtered=pickerMuscleFilter?pickerAllExercises.filter(e=>e.muscle===pickerMuscleFilter):pickerAllExercises;
+  if(q)filtered=filtered.filter(e=>e.name.toLowerCase().includes(q.toLowerCase()));
   renderPickerList(filtered);
 }
-function renderPickerList(exercises) {
-  document.getElementById('picker-list').innerHTML = exercises.map(ex => {
-    const m = MUSCLES.find(x => x.name===ex.muscle) || { icon:'💪', color:'#888' };
-    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:10px;" />` : `<span>${m.icon}</span>`;
+function renderPickerList(exercises){
+  document.getElementById('picker-list').innerHTML=exercises.map(ex=>{
+    const m=MUSCLES.find(x=>x.name===ex.muscle)||{icon:'💪',color:'#888'};
+    const thumb=ex.image_url?`<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:10px;"/>`:`<span>${m.icon}</span>`;
     return `<div class="exercise-item" onclick="openLogScreen('${ex.id}')"><div class="exercise-thumb">${thumb}</div><div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${m.color};">${ex.muscle}</div></div><div style="color:var(--accent-light);font-size:1.3rem;padding:0 6px;">+</div></div>`;
-  }).join('') || '<div class="empty-state"><p>لا يوجد نتايج</p></div>';
+  }).join('')||'<div class="empty-state"><p>لا يوجد نتايج</p></div>';
 }
 
 // ── ADD/EDIT EXERCISE ──
-function populateMuscleSelect() { document.getElementById('ex-muscle').innerHTML = MUSCLES.map(m => `<option value="${m.name}">${m.icon} ${m.name}</option>`).join(''); }
-function openAddModal() {
-  populateMuscleSelect();
-  document.getElementById('modal-exercise-title').textContent = 'إضافة تمرين';
-  ['ex-id','ex-name','ex-current-img'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('img-preview').style.display = 'none';
-  document.getElementById('ex-image').value = '';
+function populateMuscleSelect(){document.getElementById('ex-muscle').innerHTML=MUSCLES.map(m=>`<option value="${m.name}">${m.icon} ${m.name}</option>`).join('');}
+function openAddModal(){
+  populateMuscleSelect();document.getElementById('modal-exercise-title').textContent='إضافة تمرين';
+  ['ex-id','ex-name','ex-current-img'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('img-preview').style.display='none';document.getElementById('ex-image').value='';
   document.getElementById('modal-exercise').classList.add('open');
-  document.getElementById('modal-exercise').onclick = e => { if(e.target===document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
+  document.getElementById('modal-exercise').onclick=e=>{if(e.target===document.getElementById('modal-exercise'))closeModal('modal-exercise');};
 }
-async function openEditModal(id) {
-  populateMuscleSelect();
-  const { data: ex } = await sbClient.from('exercises').select('*').eq('id', id).single();
-  document.getElementById('modal-exercise-title').textContent = 'تعديل تمرين';
-  document.getElementById('ex-id').value = ex.id;
-  document.getElementById('ex-name').value = ex.name;
-  document.getElementById('ex-muscle').value = ex.muscle;
-  document.getElementById('ex-current-img').value = ex.image_url || '';
-  document.getElementById('ex-image').value = '';
-  if (ex.image_url) { document.getElementById('img-preview').src = ex.image_url; document.getElementById('img-preview').style.display = 'block'; }
-  else { document.getElementById('img-preview').style.display = 'none'; }
+async function openEditModal(id){
+  populateMuscleSelect();const {data:ex}=await sbClient.from('exercises').select('*').eq('id',id).single();
+  document.getElementById('modal-exercise-title').textContent='تعديل تمرين';
+  d  document.getElementById('ex-id').value=ex.id;document.getElementById('ex-name').value=ex.name;
+  document.getElementById('ex-muscle').value=ex.muscle;document.getElementById('ex-current-img').value=ex.image_url||'';
+  document.getElementById('ex-image').value='';
+  if(ex.image_url){document.getElementById('img-preview').src=ex.image_url;document.getElementById('img-preview').style.display='block';}
+  else{document.getElementById('img-preview').style.display='none';}
   document.getElementById('modal-exercise').classList.add('open');
-  document.getElementById('modal-exercise').onclick = e => { if(e.target===document.getElementById('modal-exercise')) closeModal('modal-exercise'); };
+  document.getElementById('modal-exercise').onclick=e=>{if(e.target===document.getElementById('modal-exercise'))closeModal('modal-exercise');};
 }
-function previewImage(input) { const file=input.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{const img=document.getElementById('img-preview');img.src=e.target.result;img.style.display='block';}; r.readAsDataURL(file); }
-async function saveExercise() {
-  const id=document.getElementById('ex-id').value, name=document.getElementById('ex-name').value.trim(), muscle=document.getElementById('ex-muscle').value;
-  const fileInput=document.getElementById('ex-image'), currentImg=document.getElementById('ex-current-img').value;
-  if (!name) { showToast('ادخل اسم التمرين', 'error'); return; }
-  let imageUrl = currentImg || null;
-  if (fileInput.files[0]) {
-    const file=fileInput.files[0], ext=file.name.split('.').pop(), fileName=`${Date.now()}.${ext}`;
-    const { error: upErr } = await sbClient.storage.from('gym-images').upload(fileName, file, { upsert: true });
-    if (!upErr) { const { data: urlData } = sbClient.storage.from('gym-images').getPublicUrl(fileName); imageUrl = urlData.publicUrl; }
+function previewImage(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{const img=document.getElementById('img-preview');img.src=e.target.result;img.style.display='block';};r.readAsDataURL(file);}
+async function saveExercise(){
+  const id=document.getElementById('ex-id').value,name=document.getElementById('ex-name').value.trim(),muscle=document.getElementById('ex-muscle').value;
+  const fileInput=document.getElementById('ex-image'),currentImg=document.getElementById('ex-current-img').value;
+  if(!name){showToast('ادخل اسم التمرين','error');return;}
+  let imageUrl=currentImg||null;
+  if(fileInput.files[0]){
+    const file=fileInput.files[0],ext=file.name.split('.').pop(),fileName=`${Date.now()}.${ext}`;
+    const {error:upErr}=await sbClient.storage.from('gym-images').upload(fileName,file,{upsert:true});
+    if(!upErr){const {data:urlData}=sbClient.storage.from('gym-images').getPublicUrl(fileName);imageUrl=urlData.publicUrl;}
   }
-  if (id) {
-    const { error } = await sbClient.from('exercises').update({ name, muscle, image_url: imageUrl }).eq('id', id);
-    if (error) { showToast('❌ ' + error.message, 'error'); return; }
-    showToast('✅ تم التعديل', 'success');
-  } else {
-    const { error } = await sbClient.from('exercises').insert({ name, muscle, image_url: imageUrl });
-    if (error) { showToast('❌ ' + error.message, 'error'); return; }
-    showToast('✅ تم الإضافة', 'success');
-  }
-  closeModal('modal-exercise'); loadManageContent();
+  if(id){const {error}=await sbClient.from('exercises').update({name,muscle,image_url:imageUrl}).eq('id',id);if(error){showToast('❌ '+error.message,'error');return;}showToast('✅ تم التعديل','success');}
+  else{const {error}=await sbClient.from('exercises').insert({name,muscle,image_url:imageUrl});if(error){showToast('❌ '+error.message,'error');return;}showToast('✅ تم الإضافة','success');}
+  closeModal('modal-exercise');loadManageContent();
 }
-async function deleteExercise(id, name) { if(!confirm(`هتحذف "${name}"؟`)) return; await sbClient.from('exercises').delete().eq('id', id); showToast('تم الحذف','success'); loadManageContent(); }
+async function deleteExercise(id,name){if(!confirm(`هتحذف "${name}"؟`))return;await sbClient.from('exercises').delete().eq('id',id);showToast('تم الحذف','success');loadManageContent();}
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function showToast(msg, type='success') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type+' show'; setTimeout(()=>t.classList.remove('show'),2500); }
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),2500);}
 
-window.addEventListener('DOMContentLoaded', () => { initSupabase(SUPABASE_URL, SUPABASE_KEY); });
+window.addEventListener('DOMContentLoaded',()=>{initSupabase(SUPABASE_URL,SUPABASE_KEY);});
 </script>
 </body>
 </html>
