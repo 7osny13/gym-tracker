@@ -144,7 +144,8 @@
   .history-set-chip { background:var(--surface2); border-radius:8px; padding:4px 8px; font-size:0.75rem; color:var(--text-muted); }
   .history-set-chip span { color:var(--text); font-weight:600; }
   /* edit session btn */
-  .history-edit-btn { background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.25); color:var(--accent-light); border-radius:8px; padding:3px 8px; font-family:'Cairo',sans-serif; font-size:0.72rem; cursor:pointer; margin-top:8px; }
+  .history-edit-btn { background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.25); color:var(--accent-light); border-radius:8px; padding:3px 8px; font-family:'Cairo',sans-serif; font-size:0.72rem; cursor:pointer; }
+  .history-delete-btn { background:rgba(255,92,108,0.1); border:1px solid rgba(255,92,108,0.25); color:var(--accent2); border-radius:8px; padding:3px 8px; font-family:'Cairo',sans-serif; font-size:0.72rem; cursor:pointer; }
 
   /* CALENDAR */
   .calendar-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
@@ -699,6 +700,14 @@ function buildEditSetRow(num,weight,reps) {
 }
 function addEditSetRow(){editSetCount++;document.getElementById('edit-sets-rows').insertAdjacentHTML('beforeend',buildEditSetRow(editSetCount,'',''));}
 function removeEditSetRow(num){const r=document.getElementById('edit-set-row-'+num);if(r&&document.querySelectorAll('#edit-sets-rows .set-row').length>1)r.remove();}
+async function deleteSession(sessionId) {
+  if (!confirm('هتحذف هذه الجلسة؟')) return;
+  const { error } = await sbClient.from('sessions').delete().eq('id', sessionId);
+  if (error) { showToast('❌ ' + error.message, 'error'); return; }
+  showToast('تم الحذف', 'success');
+  openExerciseDetail(currentDetailExerciseId);
+}
+
 async function saveEditSession() {
   const id=document.getElementById('edit-session-id').value;
   const rows=document.querySelectorAll('#edit-sets-rows .set-row'), sets=[];
@@ -760,7 +769,10 @@ async function openExerciseDetail(exerciseId) {
         <div class="history-item-header"><div class="history-item-name">${date} ${cmp} ${isPR?'<span class="pr-badge">🏆 PR</span>':''}</div></div>
         <div class="history-sets-grid">${chips}</div>
         ${s.notes?`<div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">📝 ${s.notes}</div>`:''}
-        <button class="history-edit-btn" onclick="openEditSession('${s.id}')">✏️ تعديل الجلسة</button>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <button class="history-edit-btn" onclick="openEditSession('${s.id}')">✏️ تعديل</button>
+          <button class="history-delete-btn" onclick="deleteSession('${s.id}')">🗑️ حذف</button>
+        </div>
       </div>
     </div>`;
   }).join('')||'<div class="empty-state"><div class="empty-icon">📊</div><p>لا يوجد تاريخ بعد</p></div>';
