@@ -508,7 +508,8 @@ async function loadHome() {
     </div>`).join('');
 
   // Weekly stats
-  const { data: allSessions } = await sbClient.from('sessions').select('*').order('logged_at', {ascending:false}).limit(200);
+  const { data: allSessions, error: sessErr } = await sbClient.from('sessions').select('*').order('logged_at', {ascending:false}).limit(200);
+  console.log('Sessions query result:', allSessions?.length, 'error:', sessErr);
   loadWeeklyStats(allSessions||[]);
 
   // Body weight
