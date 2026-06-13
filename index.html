@@ -541,7 +541,31 @@ async function loadHome() {
   }).join('');
 }
 
+function debugWeekly(allSessions) {
+  const now = new Date();
+  console.log('=== DEBUG WEEKLY ===');
+  console.log('Now:', now.toString());
+  console.log('Day of week:', now.getDay(), '(0=Sun,6=Sat)');
+  const day = now.getDay();
+  const daysBack = (day === 6) ? 0 : (day + 1);
+  console.log('daysBack:', daysBack);
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - daysBack);
+  weekStart.setHours(0,0,0,0);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 7);
+  console.log('weekStart:', weekStart.toString());
+  console.log('weekEnd:', weekEnd.toString());
+  console.log('Total sessions:', allSessions.length);
+  allSessions.slice(0,5).forEach(s => {
+    const d = new Date(s.logged_at);
+    const local = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    console.log('Session:', s.exercise_name, '| logged_at:', s.logged_at, '| local:', local.toString(), '| in range:', local >= weekStart && local < weekEnd);
+  });
+}
+
 function loadWeeklyStats(allSessions) {
+  debugWeekly(allSessions);
   const now = new Date();
   // Start of current week - go back to last Saturday (day=6)
   const day = now.getDay(); // 0=Sun,1=Mon,...,6=Sat
