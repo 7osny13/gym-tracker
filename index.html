@@ -568,9 +568,9 @@ function debugWeekly(allSessions) {
 function loadWeeklyStats(allSessions) {
   debugWeekly(allSessions);
   const now = new Date();
-  // Start of current week - go back to last Saturday (day=6)
+  // Start of current week from Sunday (day=0)
   const day = now.getDay(); // 0=Sun,1=Mon,...,6=Sat
-  const daysBack = (day === 6) ? 0 : (day + 1); // Saturday=0 days back, Sun=1, Mon=2...
+  const daysBack = day; // Sunday=0 days back, Mon=1, ..., Sat=6
   const weekStart = new Date(now);
   weekStart.setDate(now.getDate() - daysBack);
   weekStart.setHours(0,0,0,0);
@@ -598,7 +598,7 @@ function loadWeeklyStats(allSessions) {
     const weekMap = {};
     allSessions.forEach(s => {
       const d = toLocalDate(s.logged_at);
-      const dows = (d.getDay()+1)%7;
+      const dows = d.getDay(); // 0=Sun
       const ws = new Date(d); ws.setDate(d.getDate()-dows); ws.setHours(0,0,0,0);
       const key = ws.toISOString().split('T')[0];
       if (!weekMap[key]) weekMap[key] = { sessions:0, days:new Set(), kg:0, label: ws.toLocaleDateString('ar-EG',{month:'short',day:'numeric'}) };
