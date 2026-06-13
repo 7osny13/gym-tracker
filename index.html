@@ -552,11 +552,16 @@ function loadWeeklyStats(allSessions) {
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 7);
 
+  // Compare as local date strings to avoid timezone issues
+  const toLocalDate = (iso) => {
+    const d = new Date(iso);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  };
   const thisSessions = allSessions.filter(s => {
-    const d = new Date(s.logged_at);
+    const d = toLocalDate(s.logged_at);
     return d >= weekStart && d < weekEnd;
   });
-  const uniqueDays = new Set(thisSessions.map(s => new Date(s.logged_at).toDateString())).size;
+  const uniqueDays = new Set(thisSessions.map(s => toLocalDate(s.logged_at).toDateString())).size;
   const totalKg = thisSessions.reduce((sum,s) => sum + (s.sets||[]).reduce((a,x)=>a+(x.weight||0)*(x.reps||0),0), 0);
 
   document.getElementById('ws-days').textContent = uniqueDays;
@@ -567,7 +572,7 @@ function loadWeeklyStats(allSessions) {
   if (allSessions.length > 0) {
     const weekMap = {};
     allSessions.forEach(s => {
-      const d = new Date(s.logged_at);
+      const d = toLocalDate(s.logged_at);
       const dows = (d.getDay()+1)%7;
       const ws = new Date(d); ws.setDate(d.getDate()-dows); ws.setHours(0,0,0,0);
       const key = ws.toISOString().split('T')[0];
@@ -807,7 +812,8 @@ async function loadHistory() {
 function renderCalendar(sessions) {
   const el=document.getElementById('history-content'), now=new Date();
   const sessionDates={};
-  (sessions||[]).forEach(s=>{const d=new Date(s.logged_at);const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;if(!sessionDates[key])sessionDates[key]=[];sessionDates[key].push(s);});
+  const toLD = (iso) => { const d=new Date(iso); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); };
+  (sessions||[]).forEach(s=>{const d=toLD(s.logged_at);const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;if(!sessionDates[key])sessionDates[key]=[];sessionDates[key].push(s);});
   const firstDay=new Date(calYear,calMonth,1).getDay(), daysInMonth=new Date(calYear,calMonth+1,0).getDate();
   const monthName=new Date(calYear,calMonth,1).toLocaleDateString('ar-EG',{month:'long',year:'numeric'});
   const thisMonthS=sessions.filter(s=>{const d=new Date(s.logged_at);return d.getMonth()===calMonth&&d.getFullYear()===calYear;});
@@ -816,7 +822,7 @@ function renderCalendar(sessions) {
   let calCells='';
   for(let i=0;i<firstDay;i++) calCells+=`<div class="cal-day empty"></div>`;
   for(let d=1;d<=daysInMonth;d++){
-    const key=`${calYear}-${calMonth}-${d}`,hasSess=!!sessionDates[key],isToday=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
+    const key=`${calYear}-${calMonth}-${d}`,hasSess=!!sessionDates[key],isToday=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();  
     calCells+=`<div class="${['cal-day',hasSess?'has-session':'',isToday?'today':''].filter(Boolean).join(' ')}" ${hasSess?`onclick="showDaySessions('${key}')"`:''}>${d}</div>`;
   }
   const groups={};
