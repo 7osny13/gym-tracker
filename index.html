@@ -270,6 +270,21 @@
   .vol-tab { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text-muted); border-radius:10px; padding:9px; font-family:'Cairo',sans-serif; font-size:0.82rem; cursor:pointer; text-align:center; transition:all 0.2s; }
   .vol-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700; }
 
+  /* TEMPLATES */
+  .template-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:10px; cursor:pointer; transition:all 0.15s; position:relative; overflow:hidden; }
+  .template-card:active { background:var(--surface2); }
+  .template-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .template-card-name { font-size:1rem; font-weight:700; }
+  .template-card-count { font-size:0.75rem; color:var(--text-muted); }
+  .template-exercises-preview { display:flex; flex-wrap:wrap; gap:6px; }
+  .template-ex-chip { background:var(--surface2); border-radius:8px; padding:4px 8px; font-size:0.72rem; color:var(--text-muted); }
+  .template-suggested { border-color:var(--accent); background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(79,142,247,0.03)); }
+  .template-suggested-badge { position:absolute; top:12px; left:12px; background:var(--accent); color:#fff; border-radius:6px; padding:2px 8px; font-size:0.7rem; font-weight:700; }
+  .template-actions { display:flex; gap:8px; margin-top:12px; }
+  .template-start-btn { flex:1; background:var(--accent); color:#fff; border:none; border-radius:10px; padding:10px; font-family:'Cairo',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; }
+  .template-edit-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text-muted); border-radius:10px; padding:10px 14px; font-family:'Cairo',sans-serif; font-size:0.85rem; cursor:pointer; }
+
+  .loader {
   .loader { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-muted); font-size:0.9rem; gap:10px; }
   .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg)} }
@@ -335,6 +350,15 @@
     <!-- VOLUME CHART -->
     <div class="screen" id="screen-volume"><div id="volume-content"></div></div>
 
+    <!-- TEMPLATES -->
+    <div class="screen" id="screen-templates">
+      <div id="templates-content"></div>
+      <button class="quick-log-btn" id="template-add-btn" onclick="openAddTemplateModal()" style="margin-top:16px;">+ إضافة Template</button>
+    </div>
+
+    <!-- TEMPLATE DETAIL -->
+    <div class="screen" id="screen-template-detail"><div id="template-detail-content"></div></div>
+
     <!-- MANAGE -->
     <div class="screen" id="screen-manage">
       <div class="manage-tabs">
@@ -353,8 +377,8 @@
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="navigate('home')" data-nav="home"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
     <button class="nav-item" onclick="navigate('history')" data-nav="history"><span class="nav-icon">📅</span><span>التقويم</span></button>
+    <button class="nav-item" onclick="navigate('templates')" data-nav="templates"><span class="nav-icon">📋</span><span>Templates</span></button>
     <button class="nav-item" onclick="navigate('volume')" data-nav="volume"><span class="nav-icon">📈</span><span>التقدم</span></button>
-    <button class="nav-item" onclick="navigate('weight')" data-nav="weight"><span class="nav-icon">⚖️</span><span>الوزن</span></button>
     <button class="nav-item" onclick="navigate('manage')" data-nav="manage"><span class="nav-icon">⚙️</span><span>إدارة</span></button>
   </nav>
 </div>
@@ -425,6 +449,34 @@
   </div>
 </div>
 
+<!-- ADD TEMPLATE MODAL -->
+<div class="modal-overlay" id="modal-add-template">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="modal-template-title">إضافة Template</div>
+    <div class="form-group"><label class="form-label">اسم الـ Template</label><input type="text" class="form-input" id="tpl-name" placeholder="مثال: Push / Pull / Legs" /></div>
+    <input type="hidden" id="tpl-id" />
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-template')">إلغاء</button>
+      <button class="btn-save" onclick="saveTemplate()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXERCISE TO TEMPLATE MODAL -->
+<div class="modal-overlay" id="modal-template-exercises">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">إضافة تمارين للـ Template</div>
+    <div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="tpl-ex-search" placeholder="ابحث عن تمرين..." oninput="filterTemplateExercises(this.value)" /></div>
+    <div id="tpl-muscles-filter" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
+    <div id="tpl-exercises-list"></div>
+    <div class="modal-actions" style="margin-top:12px;">
+      <button class="btn-secondary" onclick="closeModal('modal-template-exercises')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -487,7 +539,7 @@ function navigate(screen) {
   showScreen(screen);
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === screen));
   document.getElementById('back-btn').style.display = 'none';
-  document.getElementById('header-title').textContent = {home:'🏋️ جيم تراكر',history:'📅 التقويم',volume:'📈 التقدم',weight:'⚖️ وزن الجسم',manage:'⚙️ الإدارة'}[screen];
+  document.getElementById('header-title').textContent = {home:'🏋️ جيم تراكر',history:'📅 التقويم',templates:'📋 Templates',volume:'📈 التقدم',weight:'⚖️ وزن الجسم',manage:'⚙️ الإدارة'}[screen];
 }
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -497,6 +549,7 @@ function showScreen(name) {
   if (name==='history') loadHistory();
   if (name==='weight') loadWeightScreen();
   if (name==='volume') loadVolumeScreen();
+  if (name==='templates') loadTemplatesScreen();
   if (name==='manage') loadManage();
 }
 function pushScreen(name, title) {
@@ -1034,6 +1087,283 @@ async function saveExercise(){
   closeModal('modal-exercise');loadManageContent();
 }
 async function deleteExercise(id,name){if(!confirm(`هتحذف "${name}"؟`))return;await sbClient.from('exercises').delete().eq('id',id);showToast('تم الحذف','success');loadManageContent();}
+
+// ── TEMPLATES ──
+let currentTemplateId = null;
+let tplAllExercises = [];
+let tplMuscleFilter = null;
+
+async function loadTemplatesScreen() {
+  const el = document.getElementById('templates-content');
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  const { data: templates } = await sbClient.from('templates').select('*').order('created_at', { ascending: true });
+  if (!templates || templates.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>مفيش Templates لسه<br/>اضغط + إضافة Template</p></div>';
+    return;
+  }
+
+  // Find suggested template based on last session
+  const { data: lastSess } = await sbClient.from('sessions').select('logged_at').order('logged_at', { ascending: false }).limit(1);
+  const lastDate = lastSess?.[0] ? new Date(lastSess[0].logged_at).toDateString() : null;
+  const todayStr = new Date().toDateString();
+  const trainedToday = lastDate === todayStr;
+
+  // Get last used template
+  const { data: lastTplSess } = await sbClient.from('sessions').select('template_id').not('template_id', 'is', null).order('logged_at', { ascending: false }).limit(1);
+  const lastTplId = lastTplSess?.[0]?.template_id;
+  const lastTplIdx = templates.findIndex(t => t.id === lastTplId);
+  const suggestedIdx = trainedToday ? -1 : (lastTplIdx === -1 ? 0 : (lastTplIdx + 1) % templates.length);
+  const suggestedId = suggestedIdx >= 0 ? templates[suggestedIdx]?.id : null;
+
+  el.innerHTML = templates.map(t => {
+    const exercises = t.exercises || [];
+    const isSuggested = t.id === suggestedId;
+    const chips = exercises.slice(0, 4).map(e => `<div class="template-ex-chip">${e.name}</div>`).join('') + (exercises.length > 4 ? `<div class="template-ex-chip">+${exercises.length - 4}</div>` : '');
+    return `<div class="template-card ${isSuggested ? 'template-suggested' : ''}">
+      ${isSuggested ? '<div class="template-suggested-badge">⚡ اليوم</div>' : ''}
+      <div class="template-card-header">
+        <div><div class="template-card-name">${t.name}</div><div class="template-card-count">${exercises.length} تمرين</div></div>
+        <button class="icon-btn danger" onclick="deleteTemplate('${t.id}','${t.name.replace(/'/g,"\'")}')">🗑️</button>
+      </div>
+      <div class="template-exercises-preview">${chips || '<span style="font-size:0.78rem;color:var(--text-muted);">لا يوجد تمارين بعد</span>'}</div>
+      <div class="template-actions">
+        <button class="template-start-btn" onclick="startTemplate('${t.id}')">▶ ابدأ التمرين</button>
+        <button class="template-edit-btn" onclick="editTemplate('${t.id}')">✏️ تعديل</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddTemplateModal() {
+  document.getElementById('tpl-id').value = '';
+  document.getElementById('tpl-name').value = '';
+  document.getElementById('modal-template-title').textContent = 'إضافة Template';
+  document.getElementById('modal-add-template').classList.add('open');
+  document.getElementById('modal-add-template').onclick = e => { if (e.target === document.getElementById('modal-add-template')) closeModal('modal-add-template'); };
+}
+
+async function saveTemplate() {
+  const name = document.getElementById('tpl-name').value.trim();
+  const id = document.getElementById('tpl-id').value;
+  if (!name) { showToast('ادخل اسم الـ Template', 'error'); return; }
+  if (id) {
+    const { error } = await sbClient.from('templates').update({ name }).eq('id', id);
+    if (error) { showToast('❌ ' + error.message, 'error'); return; }
+  } else {
+    const { data, error } = await sbClient.from('templates').insert({ name, exercises: [] }).select().single();
+    if (error) { showToast('❌ ' + error.message, 'error'); return; }
+    showToast('✅ تم الإضافة', 'success');
+    closeModal('modal-add-template');
+    loadTemplatesScreen();
+    return;
+  }
+  showToast('✅ تم الحفظ', 'success');
+  closeModal('modal-add-template');
+  loadTemplatesScreen();
+}
+
+async function deleteTemplate(id, name) {
+  if (!confirm(`هتحذف "${name}"؟`)) return;
+  await sbClient.from('templates').delete().eq('id', id);
+  showToast('تم الحذف', 'success');
+  loadTemplatesScreen();
+}
+
+async function editTemplate(templateId) {
+  currentTemplateId = templateId;
+  pushScreen('template-detail', 'تعديل Template');
+  await loadTemplateDetail(templateId);
+}
+
+async function loadTemplateDetail(templateId) {
+  const el = document.getElementById('template-detail-content');
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  const { data: tpl } = await sbClient.from('templates').select('*').eq('id', templateId).single();
+  const exercises = tpl.exercises || [];
+
+  const exHtml = exercises.length ? exercises.map((ex, idx) => `
+    <div class="exercise-item">
+      <div class="exercise-thumb">${ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;"/>` : getMuscleIcon(ex.muscle)}</div>
+      <div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${MUSCLES.find(m=>m.name===ex.muscle)?.color||'#888'}">${ex.muscle}</div></div>
+      <button class="icon-btn danger" onclick="removeExFromTemplate('${templateId}', ${idx})">✕</button>
+    </div>`).join('') : '<div class="empty-state" style="padding:20px;"><p>لا يوجد تمارين، اضغط + إضافة</p></div>';
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div><div style="font-size:1.1rem;font-weight:700;">${tpl.name}</div><div style="font-size:0.8rem;color:var(--text-muted);">${exercises.length} تمرين</div></div>
+      <button class="icon-btn" onclick="openRenameTemplate('${tpl.id}','${tpl.name.replace(/'/g,"\'")}')">✏️</button>
+    </div>
+    <div class="section-title">التمارين</div>
+    ${exHtml}
+    <button class="quick-log-btn" onclick="openAddExToTemplate('${templateId}')" style="margin-top:12px;">+ إضافة تمرين</button>
+    <button class="btn-primary" onclick="startTemplate('${templateId}')" style="margin-top:8px;background:var(--green);box-shadow:0 4px 16px rgba(52,199,138,0.3);">▶ ابدأ التمرين</button>`;
+}
+
+function openRenameTemplate(id, name) {
+  document.getElementById('tpl-id').value = id;
+  document.getElementById('tpl-name').value = name;
+  document.getElementById('modal-template-title').textContent = 'تغيير الاسم';
+  document.getElementById('modal-add-template').classList.add('open');
+}
+
+async function removeExFromTemplate(templateId, idx) {
+  const { data: tpl } = await sbClient.from('templates').select('*').eq('id', templateId).single();
+  const exercises = [...(tpl.exercises || [])];
+  exercises.splice(idx, 1);
+  await sbClient.from('templates').update({ exercises }).eq('id', templateId);
+  loadTemplateDetail(templateId);
+}
+
+async function openAddExToTemplate(templateId) {
+  currentTemplateId = templateId;
+  tplMuscleFilter = null;
+  document.getElementById('tpl-ex-search').value = '';
+  document.getElementById('modal-template-exercises').classList.add('open');
+  document.getElementById('modal-template-exercises').onclick = e => { if (e.target === document.getElementById('modal-template-exercises')) closeModal('modal-template-exercises'); };
+
+  // Muscle filter buttons
+  document.getElementById('tpl-muscles-filter').innerHTML =
+    `<button style="padding:5px 10px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.78rem;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-weight:700;" onclick="setTplMuscle(null,this)">الكل</button>` +
+    MUSCLES.map(m => `<button style="padding:5px 10px;border-radius:20px;font-family:Cairo,sans-serif;font-size:0.78rem;border:1px solid ${m.color};background:transparent;color:${m.color};cursor:pointer;" onclick="setTplMuscle('${m.name}',this)">${m.icon} ${m.name}</button>`).join('');
+
+  const { data: exercises } = await sbClient.from('exercises').select('*').order('name');
+  tplAllExercises = exercises || [];
+  renderTplExercises(tplAllExercises);
+}
+
+function setTplMuscle(muscle, btn) {
+  tplMuscleFilter = muscle;
+  document.querySelectorAll('#tpl-muscles-filter button').forEach(b => { b.style.background='transparent'; b.style.color=b.style.borderColor||'var(--accent)'; });
+  btn.style.background = btn.style.borderColor||'var(--accent)'; btn.style.color='#fff';
+  filterTemplateExercises(document.getElementById('tpl-ex-search').value);
+}
+
+function filterTemplateExercises(q) {
+  let list = tplMuscleFilter ? tplAllExercises.filter(e => e.muscle === tplMuscleFilter) : tplAllExercises;
+  if (q) list = list.filter(e => e.name.toLowerCase().includes(q.toLowerCase()));
+  renderTplExercises(list);
+}
+
+function renderTplExercises(exercises) {
+  document.getElementById('tpl-exercises-list').innerHTML = exercises.map(ex => {
+    const m = MUSCLES.find(x => x.name === ex.muscle) || { icon:'💪', color:'#888' };
+    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:10px;"/>` : `<span>${m.icon}</span>`;
+    return `<div class="exercise-item" onclick="addExToTemplate('${ex.id}','${ex.name.replace(/'/g,"\'")}','${ex.muscle}','${ex.image_url||''}')">
+      <div class="exercise-thumb">${thumb}</div>
+      <div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-last" style="color:${m.color};">${ex.muscle}</div></div>
+      <div style="color:var(--accent-light);font-size:1.3rem;padding:0 6px;">+</div>
+    </div>`;
+  }).join('') || '<div class="empty-state"><p>لا يوجد نتايج</p></div>';
+}
+
+async function addExToTemplate(exId, exName, exMuscle, exImg) {
+  const { data: tpl } = await sbClient.from('templates').select('*').eq('id', currentTemplateId).single();
+  const exercises = [...(tpl.exercises || [])];
+  if (exercises.find(e => e.id === exId)) { showToast('التمرين موجود بالفعل', 'error'); return; }
+  exercises.push({ id: exId, name: exName, muscle: exMuscle, image_url: exImg || null });
+  await sbClient.from('templates').update({ exercises }).eq('id', currentTemplateId);
+  showToast('✅ تم الإضافة', 'success');
+  if (currentScreen === 'template-detail') loadTemplateDetail(currentTemplateId);
+}
+
+async function startTemplate(templateId) {
+  closeModal('modal-template-exercises');
+  const { data: tpl } = await sbClient.from('templates').select('*').eq('id', templateId).single();
+  if (!tpl.exercises || tpl.exercises.length === 0) { showToast('أضف تمارين للـ Template الأول', 'error'); return; }
+  pushScreen('template-session', `▶ ${tpl.name}`);
+  renderTemplateSession(tpl);
+}
+
+// Render full template session (all exercises at once)
+let templateSessionData = {};
+async function renderTemplateSession(tpl) {
+  // Check for screen
+  let el = document.getElementById('screen-template-session');
+  if (!el) {
+    document.getElementById('screen-detail').insertAdjacentHTML('afterend', '<div class="screen" id="screen-template-session"><div id="template-session-content"></div></div>');
+    el = document.getElementById('screen-template-session');
+    el.classList.add('active');
+  }
+  const content = document.getElementById('template-session-content');
+  templateSessionData = { templateId: tpl.id, templateName: tpl.name, exercises: tpl.exercises };
+
+  // Get last sessions for each exercise
+  const ids = tpl.exercises.map(e => e.id);
+  const { data: lastSessions } = await sbClient.from('sessions').select('exercise_id, sets').in('exercise_id', ids).order('logged_at', { ascending: false });
+  const lastMap = {};
+  (lastSessions||[]).forEach(s => { if (!lastMap[s.exercise_id]) lastMap[s.exercise_id] = s; });
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const exHtml = tpl.exercises.map((ex, idx) => {
+    const last = lastMap[ex.id];
+    const initSets = last?.sets?.length ? last.sets : Array(3).fill({ weight: '', reps: '' });
+    const muscle = MUSCLES.find(m => m.name === ex.muscle) || { icon:'💪', color:'#888' };
+    const lastInfo = last ? `آخر: ${Math.max(...(last.sets||[]).map(x=>x.weight||0))} كج` : 'جديد';
+    const thumb = ex.image_url ? `<img src="${ex.image_url}" style="width:100%;height:100%;object-fit:contain;background:#252930;border-radius:12px;"/>` : `<span style="font-size:1.4rem;">${muscle.icon}</span>`;
+    const setRows = initSets.map((s, si) => `<div class="set-row" id="tset-row-${idx}-${si+1}">
+      <div class="set-num">${si+1}</div>
+      <input type="number" class="set-input" id="tw-${idx}-${si+1}" value="${s.weight||''}" placeholder="0" inputmode="decimal"/>
+      <input type="number" class="set-input" id="tr-${idx}-${si+1}" value="${s.reps||''}" placeholder="0" inputmode="numeric"/>
+      <button class="icon-btn danger" onclick="removeTplSetRow(${idx},${si+1})">✕</button>
+    </div>`).join('');
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div class="exercise-thumb">${thumb}</div>
+        <div><div style="font-weight:700;font-size:0.95rem;">${ex.name}</div><div style="font-size:0.75rem;color:${muscle.color};">${ex.muscle} · ${lastInfo}</div></div>
+      </div>
+      <div class="set-label-row"><div></div><div class="set-label">الوزن (كج)</div><div class="set-label">التكرارات</div><div></div></div>
+      <div id="tset-container-${idx}">${setRows}</div>
+      <button class="add-set-btn" onclick="addTplSetRow(${idx})" style="margin-bottom:0;">+ مجموعة</button>
+    </div>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div style="background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(79,142,247,0.05));border:1px solid rgba(79,142,247,0.2);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:0.75rem;color:var(--accent-light);font-weight:700;">📋 ${tpl.name}</div>
+      <div style="font-size:0.85rem;color:var(--text-muted);margin-top:2px;">${tpl.exercises.length} تمرين</div>
+    </div>
+    <div class="section-title">تاريخ الجلسة</div>
+    <input type="date" class="form-input" id="tpl-session-date" style="margin-bottom:16px;direction:ltr;" value="${todayStr}" />
+    ${exHtml}
+    <button class="btn-primary" onclick="saveTemplateSession()">💾 حفظ الجلسة كاملة</button>`;
+}
+
+let tplSetCounts = {};
+function addTplSetRow(exIdx) {
+  tplSetCounts[exIdx] = (tplSetCounts[exIdx] || document.querySelectorAll(`#tset-container-${exIdx} .set-row`).length) + 1;
+  const num = tplSetCounts[exIdx];
+  document.getElementById(`tset-container-${exIdx}`).insertAdjacentHTML('beforeend',
+    `<div class="set-row" id="tset-row-${exIdx}-${num}"><div class="set-num">${num}</div><input type="number" class="set-input" id="tw-${exIdx}-${num}" placeholder="0" inputmode="decimal"/><input type="number" class="set-input" id="tr-${exIdx}-${num}" placeholder="0" inputmode="numeric"/><button class="icon-btn danger" onclick="removeTplSetRow(${exIdx},${num})">✕</button></div>`);
+}
+function removeTplSetRow(exIdx, num) {
+  const r = document.getElementById(`tset-row-${exIdx}-${num}`);
+  if (r && document.querySelectorAll(`#tset-container-${exIdx} .set-row`).length > 1) r.remove();
+}
+
+async function saveTemplateSession() {
+  const dateInput = document.getElementById('tpl-session-date')?.value;
+  const loggedAt = dateInput ? new Date(dateInput + 'T12:00:00').toISOString() : new Date().toISOString();
+  const { exercises, templateId } = templateSessionData;
+  let saved = 0;
+  for (let idx = 0; idx < exercises.length; idx++) {
+    const ex = exercises[idx];
+    const rows = document.querySelectorAll(`#tset-container-${idx} .set-row`);
+    const sets = [];
+    rows.forEach(row => {
+      const num = row.id.replace(`tset-row-${idx}-`, '');
+      const w = parseFloat(document.getElementById(`tw-${idx}-${num}`)?.value) || 0;
+      const r = parseInt(document.getElementById(`tr-${idx}-${num}`)?.value) || 0;
+      if (w > 0 || r > 0) sets.push({ weight: w, reps: r });
+    });
+    if (sets.length === 0) continue;
+    await sbClient.from('sessions').insert({ exercise_id: ex.id, exercise_name: ex.name, muscle: ex.muscle, sets, notes: '', logged_at: loggedAt, template_id: templateId });
+    saved++;
+  }
+  if (saved === 0) { showToast('سجل وزن أو تكرارات الأول', 'error'); return; }
+  showToast(`✅ تم حفظ ${saved} تمرين`, 'success');
+  goBack();
+}
 
 // ── VOLUME SCREEN ──
 let volTab = 'weekly';
