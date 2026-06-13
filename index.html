@@ -543,13 +543,19 @@ async function loadHome() {
 
 function loadWeeklyStats(allSessions) {
   const now = new Date();
-  // Start of current week (Saturday)
-  const dayOfWeek = now.getDay(); // 0=Sun
-  const daysFromSat = (dayOfWeek + 1) % 7;
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - daysFromSat); weekStart.setHours(0,0,0,0);
-  const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);
+  // Start of current week - go back to last Saturday (day=6)
+  const day = now.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const daysBack = (day === 6) ? 0 : (day + 1); // Saturday=0 days back, Sun=1, Mon=2...
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - daysBack);
+  weekStart.setHours(0,0,0,0);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 7);
 
-  const thisSessions = allSessions.filter(s => { const d=new Date(s.logged_at); return d>=weekStart && d<weekEnd; });
+  const thisSessions = allSessions.filter(s => {
+    const d = new Date(s.logged_at);
+    return d >= weekStart && d < weekEnd;
+  });
   const uniqueDays = new Set(thisSessions.map(s => new Date(s.logged_at).toDateString())).size;
   const totalKg = thisSessions.reduce((sum,s) => sum + (s.sets||[]).reduce((a,x)=>a+(x.weight||0)*(x.reps||0),0), 0);
 
@@ -955,7 +961,13 @@ async function saveExercise(){
     const {error:upErr}=await sbClient.storage.from('gym-images').upload(fileName,file,{upsert:true});
     if(!upErr){const {data:urlData}=sbClient.storage.from('gym-images').getPublicUrl(fileName);imageUrl=urlData.publicUrl;}
   }
-  if(id){const {error}=await sbClient.from('exercises').update({name,muscle,image_url:imageUrl}).eq('id',id);if(error){showToast('❌ '+error.message,'error');return;}showToast('✅ تم التعديل','success');}
+  if(id){
+    const {error}=await sbClient.from('exercises').update({name,muscle,image_url:imageUrl}).eq('id',id);
+    if(error){showToast('❌ '+error.message,'error');return;}
+    // Update exercise_name in all related sessions
+    await sbClient.from('sessions').update({exercise_name:name,muscle:muscle}).eq('exercise_id',id);
+    showToast('✅ تم التعديل','success');
+  }
   else{const {error}=await sbClient.from('exercises').insert({name,muscle,image_url:imageUrl});if(error){showToast('❌ '+error.message,'error');return;}showToast('✅ تم الإضافة','success');}
   closeModal('modal-exercise');loadManageContent();
 }
